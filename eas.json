@@ -1,0 +1,18 @@
+{
+  "cli": {
+    "version": ">= 5.9.1"
+  },
+    "build": {
+      "development": {
+        "distribution": "internal",
+        "developmentClient": true
+      },
+      "preview": {
+        "distribution": "internal",
+        "env": {
+          "BASE_URL": "https://www.omerbackend.store",
+          "GOOGLE_PLACES_API_KEY": "AIzaSyDAQ2bdLjVK52X8cu8ZeuLKU_wbl-gcNTs"
+        }
+      }
+    }
+  }
