@@ -1,23 +1,25 @@
-import React from 'react';
-import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 import SportIcon from './SportIcon';
-import { BASE_URL } from '../app.config';
+import axiosInstance from '../services/api';
+import Loader from './Loader';
+import ErrorBanner from './ErrorBanner';
 
 interface SportDateSelectorProps {
   selectedSport: string;
   setSelectedSport: (sport: string) => void;
   selectedDate: String | Date;
   setSelectedDate: (date: string) => void;
+  setFetchingSports: (bool: boolean) => void;
 }
 
 
 const useSports = () => {
   return useQuery({queryKey: ['sports'], queryFn: async () => {
-    const response = await axios.get(BASE_URL + '/search/sports');
-    return response.data;  // Assuming the response data is in the correct format
+    const response = await axiosInstance.get('/search/sports');
+    return response.data; 
   }})
 };
 
@@ -33,20 +35,21 @@ const formatDateString = (date: string) => {
 }
 
 
-export default function SportDateSelector({selectedSport, setSelectedSport, selectedDate, setSelectedDate}: SportDateSelectorProps) {
-  // const [selectedSport, setSelectedSport] = useState('tabletennis');
-  // const [selectedDate, setSelectedDate] = useState('13 Oct');
+export default function SportDateSelector({selectedSport, setSelectedSport, selectedDate, setSelectedDate, setFetchingSports}: SportDateSelectorProps) {
+  var { data: sports, isLoading, error, refetch } = useSports();
 
-
-  var { data: sports, isLoading, error } = useSports();
-
+  useEffect(() => {
+    if (sports) {
+      setFetchingSports(true);
+    }
+  }, [sports]);
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Loader />;
   }
 
   if (error) {
-    return <Text>Error fetching sports {error.message}</Text>;
+    return <ErrorBanner message='Failed to fetch sports' refetch={refetch} />
   }
 
   sports = [{name: "All", key: "all", icon: "genderless"}, ...sports.data.sports]

@@ -18,11 +18,11 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
 
     return (
         <SafeAreaView className="flex-1">
-            <View className="bg-white rounded-xl shadow-lg mx-4 overflow-hidden">
+            <View className="rounded-lg mx-4 overflow-hidden">
 
                 <TouchableOpacity
                     onPress={() => setIsExpanded(!isExpanded)}
-                    className="flex-row justify-between items-center p-4 border-b border-gray-100"
+                    className="flex-row border-blue-900 border-2 p-4 rounded-lg justify-center items-center text-center"
                 >
                     <Text className="text-gray-600 text-sm">
                         {placeholder}
@@ -34,7 +34,7 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
                     />
                 </TouchableOpacity>
                 {isExpanded && (
-                    <ScrollView className="max-h-64">
+                    <ScrollView className="bg-white max-h-64">
                         {remainingPlayers?.map((player: String, index: number) => (
                             <TouchableOpacity
                                 key={index}

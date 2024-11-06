@@ -53,9 +53,9 @@ export default function SignIn() {
               passwordRef.current
             );
             if (data) {
-              router.replace("/");
+              router.navigate("/");
             } else {
-              console.log(error);
+              // console.log(error);
             }
           }}>
             <Text className=' text-white font-bold' >Log in</Text>

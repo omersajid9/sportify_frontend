@@ -5,9 +5,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
 import { useAuth } from '../app/context/auth';
 import SportIcon from './SportIcon';
-import { BASE_URL } from '../app.config';
 import { router } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
+import axiosInstance from '../services/api';
 
 interface GameViewProps {
   gameData: any;
@@ -28,7 +28,7 @@ export default function GameView({gameData, explore}: GameViewProps) {
       player_rsvp: rsvp
     }
     try {
-      const response = await axios.post(BASE_URL + '/session/rsvp', data, {
+      const response = await axiosInstance.post('/session/rsvp', data, {
         headers: {
           'Content-Type': 'application/json', // Ensure the request is in JSON format
         }
@@ -82,6 +82,33 @@ export default function GameView({gameData, explore}: GameViewProps) {
   }
 
 
+  const formatDate = (date1: Date, date2: Date): string => {
+    var adjustedDate1 = new Date(date1.getTime() - date1.getTimezoneOffset() * 60000);
+    var adjustedDate2 = new Date(date2.getTime() - date2.getTimezoneOffset() * 60000);
+
+    const isSameDay = date1.toDateString() === date2.toDateString();
+    const options1: Intl.DateTimeFormatOptions = {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    };
+    const options2: Intl.DateTimeFormatOptions = {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    };
+
+    if (isSameDay) {
+      return adjustedDate1.toLocaleString('en-US', options1) + " - " + adjustedDate2.toLocaleString('en-US', options2);
+    } else {
+      return adjustedDate1.toLocaleString('en-US', options1) + " - " + adjustedDate2.toLocaleString('en-US', options1);
+    }
+  };
+
+
   // Render content
   const renderContent = () => (
     <View ref={flRef} className=" mx-auto bg-gray-50 w-full rounded-xl shadow-sm p-5 border border-gray-200">
@@ -117,7 +144,7 @@ export default function GameView({gameData, explore}: GameViewProps) {
       {/* Date, Time, Location */}
       <View className="mb-3">
         <Text className="text-gray-700">
-          <FontAwesome name="calendar" size={14} color="gray" /> {(new Date(session.time).toLocaleString())}
+          <FontAwesome name="calendar" size={14} color="gray" /> {formatDate(new Date(session.start_time), new Date(session.end_time))}
         </Text>
         <Text className="text-gray-700">
           <FontAwesome name="map-marker" size={14} color="gray" /> {session.location_name} ~ {(session.dis/ 1609.34).toPrecision(1)} miles

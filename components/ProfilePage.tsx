@@ -3,17 +3,17 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, ScrollView, RefreshControl } from 'react-native';
 import GamesPlayedView from './GamePlayedView';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useAuth } from '../app/context/auth';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import SportIcon from './SportIcon';
-import { BASE_URL } from '../app.config';
+import axiosInstance from '../services/api';
+import Loader from './Loader';
+import ErrorBanner from './ErrorBanner';
 
 const getUserProfile = (username: String | null) => {
   return useQuery({
     queryKey: ['user_profile', username], queryFn: async () => {
-      const response = await axios.get(BASE_URL + '/player/profile', { params: { username: username } });
+      const response = await axiosInstance.get('/player/profile', { params: { username: username } });
       return response.data.data;  // Assuming the response data is in the correct format
     }
   })
@@ -21,13 +21,10 @@ const getUserProfile = (username: String | null) => {
 
 interface ProfileScreenProps {
   user: string | null;
-  visit: boolean;
 }
 
 
-export default function ProfileScreen({ user, visit }: ProfileScreenProps) {
-
-  const { signOut } = useAuth();
+export default function ProfileScreen({ user }: ProfileScreenProps) {
   const username = user;
   const { data: data, isLoading: gamesLoading, error: gamesError, refetch } = getUserProfile(username);
   const [refreshing, setRefreshing] = useState(false);
@@ -37,11 +34,11 @@ export default function ProfileScreen({ user, visit }: ProfileScreenProps) {
   const ratings = data?.ratings;
 
   if (gamesLoading) {
-    return <Text>Loading...</Text>;
+    return <Loader />;
   }
 
   if (gamesError) {
-    return <Text>Error fetching games {gamesError.message}</Text>;
+    return <ErrorBanner message='Error fetching profile' refetch={refetch} />;
   }
 
 
@@ -53,20 +50,8 @@ export default function ProfileScreen({ user, visit }: ProfileScreenProps) {
 
   return (
     <View className="flex-1 p-4">
-      <View className="flex-row justify-end">
-        {visit ? null :
-          <TouchableOpacity onPress={signOut}>
-            <MaterialCommunityIcons
-              name="logout"
-              size={24}
-              color="rgb(30 58 138)"
-              style={{ transform: [{ scaleX: -1 }] }}  // Flip across Y-axis
-            />
-          </TouchableOpacity>
-        }
-      </View>
-      <View className="mb-6 p-4 bg-transparent rounded-lg">
-        <View className="flex-row items-center mb-4">
+      <View className="mb-2 p-4 bg-transparent rounded-lg">
+        <View className="flex-row items-center mb-2">
           <Image
             source={{ uri: userInfo.profile_picture }}
             className=" w-14 h-14 rounded-full border-2 border-blue-900 mr-4"
@@ -79,7 +64,7 @@ export default function ProfileScreen({ user, visit }: ProfileScreenProps) {
 
       {ratings.length > 0 &&
 
-        <View className='h-20 mb-4'>
+        <View className='h-26 mb-4'>
           <FlatList
             data={ratings}
             horizontal
@@ -95,15 +80,19 @@ export default function ProfileScreen({ user, visit }: ProfileScreenProps) {
                     size={18}
                     color="rgb(30 58 138)"
                   />
-                  <Text className="text-base font-bold ml-2">{item.sport} ({item.mode})</Text>
+                  <Text className="text-base font-bold mx-2">{item.sport}</Text>
                 </View>
-                <Text className="text-2xl text-gray-500 font-bold">{(item.rating).toFixed(2)}</Text>
+                <View className=' flex-row items-center mb-1 gap-2'>
+                  <ModeIcon mode={item.mode} />
+                    <Text className="text-2xl text-gray-500 font-bold text-center">{(item.rating).toFixed(2)}</Text>
+
+                  </View>
+
               </View>
             )}
           />
         </View>
       }
-
       <GestureHandlerRootView className='flex-1 h-full'>
         <Text className="text-lg font-semibold mb-4">Scores</Text>
         <FlatList
@@ -121,3 +110,19 @@ export default function ProfileScreen({ user, visit }: ProfileScreenProps) {
     </View>
   );
 };
+
+interface ModeIconProps {
+  mode: String
+}
+
+function ModeIcon({mode}: ModeIconProps) {
+  if (mode == 'single') {
+    return (
+      <Ionicons className='' name="person-outline" size={18} color="rgb(30 58 138)" />
+    )
+  } else {
+    return (
+      <Ionicons className='' name="people-outline" size={18} color="rgb(30 58 138)" />
+    )
+  }
+}

@@ -1,10 +1,13 @@
-import { SplashScreen, Stack } from "expo-router";
+import { Stack, SplashScreen } from "expo-router";
 import { Provider, useAuth } from "./context/auth";
+// import * as SplashScreen from 'expo-splash-screen';
+
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from "react";
 import "../global.css";
+import { usePushNotifications } from "../services/useNotifications";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +26,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
     SplashScreen.hideAsync();
-
     return (
         <Provider>
             <RootLayoutNav />
@@ -33,12 +35,20 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
     const { authInitialized, user } = useAuth();
-    if (!authInitialized && !user) return null;
-    
+    const { expoPushToken } = usePushNotifications();
+    if (!authInitialized) return null;
+
+    // const unsubscribe = NetInfo.addEventListener(state => {
+    //     console.log('Connection type', state.type);
+    //     console.log('Is connected?', state.isConnected);
+    //   });
+      
+
     return (
         <QueryClientProvider client={queryClient} >
             <SafeAreaView style={{ flex: 1 }} edges={['top']}>
                 <Stack>
+                    <Stack.Screen name="(auth)" options={{ title: "" }} />
                     <Stack.Screen
                         name="(tabs)"
                         options={{
@@ -46,10 +56,11 @@ function RootLayoutNav() {
                             headerShown: false,
                         }} />
                     <Stack.Screen name="createSession" options={{ title: "Create a Session" }} />
-                    <Stack.Screen name="joinSession/[id]" options={{ title: "Join Game" }} />
+                    <Stack.Screen name="joinSession/[id]" options={{ title: "Join Session" }} />
                     <Stack.Screen name="reportScore" options={{ title: "Report Score" }} />
                     <Stack.Screen name="profile/[user]" options={{ title: "", headerShown: false }} />
-                    <Stack.Screen name="game/[id]" options={{ title: "" }} />
+                    <Stack.Screen name="game/[id]" options={{ title: "Game Overview" }} />
+                    <Stack.Screen name="settings" options={{ title: "Settings" }} />
                 </Stack>
             </SafeAreaView>
         </QueryClientProvider>

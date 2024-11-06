@@ -8,14 +8,14 @@ import PlayerSearchView from '../../components/PlayerSearchView';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAuth } from '../context/auth';
-import { BASE_URL } from '../../app.config';
+import axiosInstance from '../../services/api';
 
 const SafeSearchBar = (SearchBar as unknown) as React.FC<SearchBarBaseProps>;
 
 const fetchPlayers = (query: string) => {
   return useQuery({queryKey: ['players', query], queryFn: async () => {
     const searchQuery = query || '*';
-    const response = await axios.get(BASE_URL + '/search/players', { params: { query: searchQuery } });
+    const response = await axiosInstance.get('/search/players', { params: { query: searchQuery } });
     return response.data.data.players;
   },
   enabled: true})

@@ -1,25 +1,29 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert, Platform, Button, Pressable, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, Platform, Button, Pressable, ScrollView, ActionSheetIOS } from 'react-native';
 import RNDateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useAuth } from '../context/auth';
 import { Stack, useRouter } from 'expo-router';
+import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 // import { GestureHandlerRootView, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler';
 
 const SignUp = () => {
+  const today = new Date();
+  const minimumDate = new Date(today.setFullYear(today.getFullYear() - 13));
   const { signUp } = useAuth();
   const userNameRef = useRef<string>('');
   const passwordRef = useRef<string>('');
-  const dateOfBirthRef = useRef<Date>(new Date());
+  const dateOfBirthRef = useRef<ActionSheetRef>(null);
+  const dateRef = useRef<Date>(minimumDate);
   const [selectedAvatar, setSelectedAvatar] = useState<string>('https://avatar.iran.liara.run/public/22');
-  const [time, setTime] = useState<Date>(new Date());
+  const [time, setTime] = useState<Date>(minimumDate);
   const router = useRouter();
 
   const showDatePicker = () => {
     DateTimePickerAndroid.open({
-      value: dateOfBirthRef?.current,
+      value: dateRef?.current,
       onChange: (event: any, selectedDate: any) => {
         if (event.type === 'set') {
-          dateOfBirthRef.current = selectedDate;
+          dateRef.current = selectedDate;
         }
       },
       mode: 'date',
@@ -30,7 +34,7 @@ const SignUp = () => {
   const onChangeTimePicker = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || time;
     setTime(currentDate);
-    dateOfBirthRef.current = currentDate;
+    dateRef.current = currentDate;
   };
 
   const avatars = [
@@ -43,7 +47,7 @@ const SignUp = () => {
   ];
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="justify-center items-center flex-1">
       <Stack.Screen options={{ title: "Sign Up" }} />
       {/* Username Input */}
       <View className="mb-4 w-3/4">
@@ -75,18 +79,43 @@ const SignUp = () => {
         />
       </View>
 
+
+
       {/* Date of Birth Picker */}
       <View className="mb-4 w-3/4">
         <Text className="text-lg mb-2 text-blue-900">Date of Birth</Text>
         {Platform.OS == 'ios' ?
-          <RNDateTimePicker
-            textColor='black'
-            testID="dateTimePicker"
-            value={time}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeTimePicker}
-          />
+                <View>
+                <View className=' mb-6 '>
+                  <Text className='text-lg mb-2'>{time.toDateString()}</Text>
+                  <View className='justify-center items-center'>
+                    <Pressable className=' p-4 bg-blue-900 rounded-lg ' onPress={() => dateOfBirthRef.current?.show()}>
+                      <Text className=' text-white font-bold' >Pick a time</Text>
+                    </Pressable>
+                  </View>
+                </View>
+                <ActionSheet
+                  ref={dateOfBirthRef}
+                  enableGesturesInScrollView={true}
+                  containerStyle={{
+                    height: 250,
+                    backgroundColor: 'white'
+                  }}
+                  indicatorStyle={{
+                    width: 100,
+                    maxHeight: 200
+                  }}>
+                  <RNDateTimePicker
+                    textColor='black'
+                    testID="dateTimePicker"
+                    value={time}
+                    minimumDate={minimumDate}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={onChangeTimePicker}
+                  />
+                </ActionSheet>
+              </View>        
           :
           <View className=' mt-3 justify-center items-center'>
             <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={showDatePicker}>
@@ -122,7 +151,7 @@ const SignUp = () => {
 
       <View className=' mt-3 justify-center items-center'>
         <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={async () => {
-          const date_of_birth = dateOfBirthRef.current.toISOString().split('T')[0];
+          const date_of_birth = dateRef.current.toISOString().split('T')[0];
           const { data, error } = await signUp(
             userNameRef.current,
             passwordRef.current,
@@ -130,11 +159,9 @@ const SignUp = () => {
             selectedAvatar
           );
           if (data) {
-            router.replace("/");
+            router.navigate("/");
           } else {
-            Alert.alert("Error ", "Sign-up failed");
           }
-
         }}>
           <Text className=' text-white font-bold' >Sign up</Text>
         </Pressable>
@@ -143,7 +170,7 @@ const SignUp = () => {
       <View className="mt-8">
         <Text
           className="text-center font-medium text-blue-500"
-          onPress={() => router.replace("/sign-in")}
+          onPress={() => router.navigate("/sign-in")}
         >
           Click Here To Return To Sign In Page
         </Text>

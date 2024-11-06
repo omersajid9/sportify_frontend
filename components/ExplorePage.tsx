@@ -9,9 +9,12 @@ import { FlashList } from "@shopify/flash-list";
 import { useAuth } from '../app/context/auth';
 import GameMap from './GameMap';
 import ReloadButton from './ReloadButton';
-import { BASE_URL, GOOGLE_PLACES_API_KEY } from '../app.config';
+import { GOOGLE_PLACES_API_KEY } from '../app.config';
 import GoogleSearchPlaces from './GoogleSearchPlaces';
 import { reverseGeocodeAsync } from 'expo-location';
+import axiosInstance from '../services/api';
+import Loader from './Loader';
+import ErrorBanner from './ErrorBanner';
 
 function formatDate(date: Date) {
     if (isNaN(date.getTime())) {
@@ -24,14 +27,15 @@ function formatDate(date: Date) {
     return `${year}-${month}-${day}`; // Return the formatted date string
 }
 
-const getGames = (sport: string, date: string, user: string | null, lat: number, lon: number) => {
+const getGames = (sport: string, date: string, user: string | null, lat: number, lon: number, ready: boolean) => {
     date = formatDate(new Date(date));
 
     return useQuery({
         queryKey: ['sessions', sport, date, user, lat, lon], queryFn: async () => {
-            const response = await axios.get(BASE_URL + '/search/explore_sessions', { params: { username: user, lat: lat, lng: lon, sport: sport, date: (date == "null" ? null : date) } });
+            const response = await axiosInstance.get('/search/explore_sessions', { params: { username: user, lat: lat, lng: lon, sport: sport, date: (date == "null" ? null : date) } });
             return response.data.data.sessions;  // Assuming the response data is in the correct format
-        }
+        },
+        enabled: ready
     })
 };
 
@@ -41,6 +45,8 @@ interface Prediction {
 }
 
 export default function ExplorePage() {
+    const [fetchingSports, setFetchingSports] = useState(false);
+
     const { user, location } = useAuth();
     const Location = location ? location : { lat: 40, lng: -74 };
 
@@ -100,7 +106,7 @@ export default function ExplorePage() {
         })
     }
 
-    var { data: games, isLoading, error, refetch } = getGames(selectedSport, selectedDate, user, region.latitude, region.longitude);
+    var { data: games, isLoading, error, refetch } = getGames(selectedSport, selectedDate, user, region.latitude, region.longitude, fetchingSports);
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -150,6 +156,7 @@ export default function ExplorePage() {
                 setSelectedSport={setSelectedSport}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
+                setFetchingSports={setFetchingSports}
             />
 
 
@@ -181,9 +188,9 @@ export default function ExplorePage() {
 
 
             {isLoading ?
-                <Text>Loading...</Text>
+                <Loader />
                 : error ?
-                    <Text>Error fetching games {error.message}</Text>
+                    <ErrorBanner message='Failed to fetch sessions' refetch={refetch} />
                     : predictions.length != 0 ?
                         <View className="flex-1 mx-2 rounded-lg">
                             <FlashList

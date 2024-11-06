@@ -1,17 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../context/auth';
-import { BASE_URL } from '../../app.config';
 import SportIcon from '../../components/SportIcon';
 import { FontAwesome } from '@expo/vector-icons';
+import axiosInstance from '../../services/api';
 
 const getSession = (id: String, location: {lat: number, lng: number}) => {
   return useQuery({
     queryKey: ['session', id, location.lat, location.lng], queryFn: async () => {
-      const response = await axios.get(BASE_URL + '/session/' + id, { params: { lat: location.lat, lng: location.lng } });
+      const response = await axiosInstance.get('/session/' + id, { params: { lat: location.lat, lng: location.lng } });
       return response.data.data.session;  // Assuming the response data is in the correct format
     }
   })
@@ -20,11 +19,36 @@ const getSession = (id: String, location: {lat: number, lng: number}) => {
 const getUsernames = (id: string, ready: boolean) => useQuery({
   queryKey: ['rsvp', 'usernames', id],
   queryFn: async () => {
-    const response = await axios.get(BASE_URL + '/session/players', { params: { session_id: id } });
+    const response = await axiosInstance.get('/session/players', { params: { session_id: id } });
     return response.data.data.players;
   },
   enabled: !!id && ready
 });
+
+const formatDate = (date1: Date, date2: Date): string => {
+  var adjustedDate1 = new Date(date1.getTime() - date1.getTimezoneOffset() * 60000);
+  var adjustedDate2 = new Date(date2.getTime() - date2.getTimezoneOffset() * 60000);
+  const isSameDay = date1.toDateString() === date2.toDateString();
+  const options1: Intl.DateTimeFormatOptions = {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+  const options2: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+
+  if (isSameDay) {
+    return adjustedDate1.toLocaleString('en-US', options1) + " - " + adjustedDate2.toLocaleString('en-US', options2);
+  } else {
+    return adjustedDate1.toLocaleString('en-US', options1) + " - " + adjustedDate2.toLocaleString('en-US', options1);
+  }
+};
 
 
 export default function joinSession() {
@@ -47,7 +71,7 @@ export default function joinSession() {
     }
 
     try {
-      const response = await axios.post(BASE_URL + '/session/rsvp', data, {
+      const response = await axiosInstance.post('/session/rsvp', data, {
         headers: {
           'Content-Type': 'application/json', // Ensure the request is in JSON format
         }
@@ -73,7 +97,6 @@ export default function joinSession() {
   return (
     <View className=" mx-auto bg-gray-50 w-full rounded-xl shadow-sm p-5 border border-gray-200">
 
-      {/* Top Row with Game Type and Player Count */}
       <View className="flex-row justify-between items-center mb-2">
         <View className="flex-row items-center">
           <SportIcon
@@ -88,9 +111,7 @@ export default function joinSession() {
         </Text>
       </View>
 
-      {/* Main Content Section */}
       <View className="flex-row items-center mb-4">
-        {/* Profile Image */}
         <Image
           source={{ uri: session.username_icon }}
           className="w-12 h-12 rounded-full border-2 border-blue-900"
@@ -101,10 +122,9 @@ export default function joinSession() {
         </View>
       </View>
 
-      {/* Date, Time, Location */}
       <View className="mb-3">
         <Text className="text-gray-700">
-          <FontAwesome name="calendar" size={14} color="gray" /> {(new Date(session.time).toLocaleString())}
+          <FontAwesome name="calendar" size={14} color="gray" /> {formatDate(new Date(session.start_time), new Date(session.end_time))}
         </Text>
         <Text className="text-gray-700">
           <FontAwesome name="map-marker" size={14} color="gray" /> {session.location_name} ~ {(session.dis / 1609.34).toPrecision(1)} miles

@@ -1,18 +1,19 @@
 import { Picker } from '@react-native-picker/picker';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, TouchableWithoutFeedback, Keyboard, Alert, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from './context/auth';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
-import { BASE_URL } from '../app.config';
 import TeamPicker from '../components/TeamPicker';
+import axiosInstance from '../services/api';
+import Loader from '../components/Loader';
+import ErrorBanner from '../components/ErrorBanner';
 
 const getUpcomingSessions = (username: string | null) => useQuery({
   queryKey: ['sessions', 'to_report ', username],
   queryFn: async () => {
-    const response = await axios.get(BASE_URL + '/search/reportable_sessions', { params: { username: username || "" } });
+    const response = await axiosInstance.get('/search/reportable_sessions', { params: { username: username || "" } });
     return response.data.data.sessions;
   }
 });
@@ -20,7 +21,7 @@ const getUpcomingSessions = (username: string | null) => useQuery({
 const getUsernames = (id: string | undefined) => useQuery({
   queryKey: ['rsvp', 'usernames', id],
   queryFn: async () => {
-    const response = await axios.get(BASE_URL + '/session/players', { params: { session_id: id } });
+    const response = await axiosInstance.get('/session/players', { params: { session_id: id } });
     return response.data.data.players;
   },
   enabled: !!id
@@ -42,18 +43,28 @@ export default function ReportScore() {
   const sessionPickerRef = useRef<any>(null);
 
   // get data about session and players for the session
-  const { data: sessions, isLoading: sessionsLoading, error: sessionsError } = getUpcomingSessions(user);
-  const { data: usernames } = getUsernames(session?.id);
-
-  if (user && session && !team1Usernames.includes(user)) {
-    team1Usernames.push(user);
-  }
+  const { data: sessions, isLoading: sessionsLoading, error: sessionsError, refetch: refetchSession } = getUpcomingSessions(user);
+  const { data: usernames, isLoading: usernameLoading, error: usernameError, refetch: refetchUsername } = getUsernames(session?.id);
 
   useEffect(() => {
     setTeam1Usernames([]);
     setTeam2Usernames([]);
     setScores([{ team1: '', team2: '' }]);
   }, [session])
+
+  if (sessionsLoading || usernameLoading) {
+    return <Loader />;
+  }
+
+  if (sessionsError || usernameError) {
+    return <ErrorBanner message='Error loading data' refetch={() => { refetchSession(); refetchUsername(); }} />;
+  }
+
+
+  if (user && session && !team1Usernames.includes(user)) {
+    team1Usernames.push(user);
+  }
+
 
 
   // filter out users from team1 and team2
@@ -103,7 +114,7 @@ export default function ReportScore() {
     };
 
     try {
-      const response = await axios.post(BASE_URL + '/game/report', gameSubmit, {
+      const response = await axiosInstance.post('/game/report', gameSubmit, {
         headers: { 'Content-Type': 'application/json' }
       });
       router.navigate("/");
@@ -143,13 +154,13 @@ export default function ReportScore() {
       <ScrollView>
 
         <View className="flex-1 items-center px-6 h-full">
-          <View className="my-6 w-full">
-            <Text className="text-lg mb-2 font-bold">Select Session</Text>
+          <View className="my-4 w-full">
+            <Text className="text-lg font-bold">Select Session</Text>
           </View>
 
           <View>
             <TouchableOpacity
-              className="rounded-lg p-4"
+              className="border-blue-900 border-2 p-4 rounded-lg justify-center items-center text-center"
               onPress={onSessionPress}
             >
               <Text className="text-center">{session ? session.session_name : "Select Session"}</Text>

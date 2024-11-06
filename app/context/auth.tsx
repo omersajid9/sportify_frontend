@@ -1,12 +1,12 @@
 import axios from "axios";
-import { useRootNavigation, useRouter, useSegments } from "expo-router";
+import { router, useRouter, useSegments } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { BASE_URL } from "../../app.config";
 import { getValueFor, save } from "./store";
-import Location, {getCurrentPositionAsync, getLastKnownPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
+import Location, { getCurrentPositionAsync, getLastKnownPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
+import axiosInstance from "../../services/api";
 
-// Define the AuthContextValue interface
 interface SignInResponse {
   data?: string;
   error?: Error | string;
@@ -51,15 +51,31 @@ export function Provider(props: ProviderProps) {
     const router = useRouter();
 
     useEffect(() => {
+      const reStoreUser = async () => {
+        const store_user = await getValueFor("user");
+        if (user && store_user != user) {
+          if (store_user) {
+            setAuth(store_user);
+          } else {
+            setAuth(null);
+          }
+        }
+      };
+      reStoreUser();
+    }, [])
+
+
+    useEffect(() => {
       const inAuthGroup = segments[0] === "(auth)";
       if (!authInitialized) return;
       if (
         !user &&
         !inAuthGroup
       ) {
-        router.replace('/sign-in');
+        console.log("IN HERE")
+        router.navigate('/sign-in');
       } else if (user && inAuthGroup) {
-        router.replace("/");
+        router.navigate("/");
       }
     }, [user, segments, authInitialized]);
   };
@@ -72,11 +88,10 @@ export function Provider(props: ProviderProps) {
         locationData = await getCurrentPositionAsync({});
       }
       const { latitude, longitude } = locationData.coords;
-      var newLocation = {lat: locationData.coords.latitude, lng: locationData.coords.longitude};
+      var newLocation = { lat: locationData.coords.latitude, lng: locationData.coords.longitude };
 
       if (!location || location.lat !== latitude || location.lng !== longitude) {
         setLocation(newLocation);
-        // await save("location", JSON.stringify(newLocation));
       }
     } else {
       Alert.alert("Permission Denied", "Location permissions are required to use this feature.");
@@ -87,28 +102,68 @@ export function Provider(props: ProviderProps) {
   useEffect(() => {
     const init = async () => {
       const store_user = await getValueFor("user");
-      // const store_location = await getValueFor("location");
-      
-      // if (store_location) {
-      //   setLocation(JSON.parse(store_location));
-      // } else {
-        await getLocation();
-      // }
+      await getLocation();
       if (store_user) {
         setAuth(store_user);
+      } else {
+        setAuth(null);
       }
-      // setAuth('omer');
+      // logout();
+      // setAuth(null);
       setAuthInitialized(true);
     }
     init();
   }, []);
+
+
+  const removeNotificationToken = async () => {
+    const token = await getValueFor("notification_token");
+    const user = await getValueFor("user");
+    if (token && user) {
+      try {
+        const data = {
+          username: user,
+          token: token
+        }
+        const response = await axiosInstance.post('/notification/remove_token', data, {
+          headers: {
+            'Content-Type': 'application/json', // Ensure the request is in JSON format
+          }
+        });
+      } catch (error) {
+        console.error('Error saving notification token:', error);
+      }
+    }
+  }
+
+  async function saveNotificationToken() {
+    const token = await getValueFor("notification_token");
+    const user = await getValueFor("user");
+    if (token && user) {
+      try {
+        const data = {
+          username: user,
+          token: token
+        }
+        const response = await axiosInstance.post('/notification/report_token', data, {
+          headers: {
+            'Content-Type': 'application/json', // Ensure the request is in JSON format
+          }
+        });
+      } catch (error) {
+        console.error('Error saving notification token:', error);
+      }
+    }
+  }
 
   /**
    *
    * @returns
    */
   const logout = async (): Promise<SignOutResponse> => {
-    save("user", null);
+    await removeNotificationToken()
+    await save("auth_token", null);
+    await save("user", null);
     setAuth(null);
     return { error: undefined, data: "done" }
   };
@@ -123,21 +178,21 @@ export function Provider(props: ProviderProps) {
     password: string
   ): Promise<SignInResponse> => {
     try {
-      // Make the POST request to the sign-in route
-      const response = await axios.post(BASE_URL + '/player/sign-in', { username: username, password: password });
-
+      const response = await axios.post(BASE_URL + '/auth/sign-in', { username: username, password: password });
       if (response.status === 200) {
-        // Alert.alert("Login", "Login successful");
+        await save("auth_token", response.data.auth_token.token);
         setAuth(username);
-        save("user", username);
+        await save("user", username);
+        await saveNotificationToken();
         return { data: username, error: undefined };
       } else {
-        save("user", null);
+        await save("user", null);
         setAuth(null);
         return { error: "Something went wrong with request", data: undefined };
       }
     } catch (error: any) {
-      save("user", null);
+      await save("user", null);
+      await save("auth_token", null);
       if (error.response && error.response.status === 401) {
         Alert.alert("Login Failed", "Invalid username or password");
         return { error: "Invalid username or password", data: undefined };
@@ -148,13 +203,6 @@ export function Provider(props: ProviderProps) {
     }
   };
 
-  /**
-   * 
-   * @param email 
-   * @param password 
-   * @param username 
-   * @returns 
-   */
   const createAcount = async (
     username: string,
     password: string,
@@ -162,34 +210,31 @@ export function Provider(props: ProviderProps) {
     profile_picture: string,
   ): Promise<SignInResponse> => {
     try {
-      // Make the POST request to the sign-up route
-      const response = await axios.post(BASE_URL + '/player/sign-up', {
+      const response = await axios.post(BASE_URL + '/auth/sign-up', {
         username: username,
         password: password,
         date_of_birth: date_of_birth,
         profile_picture: profile_picture
       });
 
-      // Handle success response
       if (response.status === 201) {
-        // Alert.alert("Account Created", "Your account has been created successfully");
-        setAuth(username);  // Set auth context or token as needed
-        save("user", username);
+        await save("auth_token", response.data.auth_token.token);
+        setAuth(username);
+        await save("user", username);
+        await saveNotificationToken();
         return { data: username, error: undefined };
       } else {
-        save("user", null);
+        await save("user", null);
         Alert.alert("Sign Up Failed", "Something went wrong");
         return { error: "Something went wrong", data: undefined };
       }
     } catch (error: any) {
-      save("user", null);
-      // Handle errors
+      await save("user", null);
+      await save("auth_token", null);
       if (error.response && error.response.status === 409) {
-        // Conflict (username already exists)
         Alert.alert("Sign Up Failed", "Username already taken");
         return { error: "Username already taken", data: undefined };
       } else {
-        // Other errors
         Alert.alert("Sign Up Failed", "Something went wrong");
         return { error: "Something went wrong", data: undefined };
       }

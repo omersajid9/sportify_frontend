@@ -6,12 +6,14 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { useAuth } from "../app/context/auth";
-import { BASE_URL } from "../app.config";
+import axiosInstance from "../services/api";
+import Loader from "./Loader";
+import ErrorBanner from "./ErrorBanner";
 
 const getUpcomingGames = (user: string | null, location: { lat: number, lng: number }) => {
     return useQuery({
         queryKey: ['sessions', 'going', user], queryFn: async () => {
-            const response = await axios.get(BASE_URL + '/search/going_sessions', { params: { username: user, lat: location.lat, lng: location.lng } });
+            const response = await axiosInstance.get('/search/going_sessions', { params: { username: user, lat: location.lat, lng: location.lng } });
             return response.data.data.sessions;
         }
     })
@@ -33,11 +35,11 @@ export default function GoingPage() {
 
 
     if (isLoading) {
-        return <Text>Loading...</Text>;
+        return <Loader />;
     }
 
     if (error) {
-        return <Text>Error fetching games {error.message}</Text>;
+        return <ErrorBanner message='Failed to fetch sessions' refetch={refetch} />;
     }
 
     return (

@@ -1,16 +1,15 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '../context/auth';
-import { BASE_URL } from '../../app.config';
+import axiosInstance from '../../services/api';
 
 
 const getGame = (game_id: string) => {
     return useQuery({
         queryKey: ['games', game_id], queryFn: async () => {
-            const response = await axios.get(BASE_URL + '/game/' + game_id);
+            const response = await axiosInstance.get('/game/' + game_id);
             return response.data.data.game;  // Assuming the response data is in the correct format
         }
     })
@@ -62,7 +61,7 @@ export default function Game() {
             confirmation: confirmation
         }
         try {
-            const response = await axios.post(BASE_URL + '/game/confirm', data, {
+            const response = await axiosInstance.post('/game/confirm', data, {
                 headers: {
                     'Content-Type': 'application/json', // Ensure the request is in JSON format
                 }

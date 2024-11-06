@@ -1,13 +1,16 @@
 import React from 'react';
 import ProfilePage from '../../components/ProfilePage';
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import { View } from 'react-native';
 
-
-export default function Profile () {
+export default function Profile() {
     var { user } = useLocalSearchParams();
-    user = Array.isArray(user) ? user[0] : user;  
-    
+    user = Array.isArray(user) ? user[0] : user;
+
     return (
-        <ProfilePage user={user} visit={true}/>
+        <View className='flex-1'>
+            <Stack.Screen options={{ title: "Profile View", headerShown: true }} />
+            <ProfilePage user={user} />
+        </View>
     )
 }
