@@ -62,8 +62,6 @@ export default function GameMap({ games, region, setRegion }: GameMapProps) {
         return markerColors[sports.indexOf(gameType)];
     };
 
-    console.log(games)
-
     return (
 
         <MapView

@@ -13,7 +13,7 @@ export default function Settings() {
                 onPress: () => { },
                 style: 'cancel',
             },
-            { text: 'OK', onPress: () => signOut() },
+            { text: 'OK', onPress: () => signOut(true) },
         ]);
     const deleteAlert = () =>
         Alert.alert('Delete Account', 'Are you sure?', [
@@ -39,9 +39,7 @@ export default function Settings() {
                 headers: { 'Content-Type': 'application/json' },
                 data: { username }  // Pass `data` inside the options object
             });
-            if (response.status === 200) {
-                signOut();
-            }
+            await signOut(false);
         } catch (error: any) {
             Alert.alert("Login Failed", "Invalid username or password");
         }

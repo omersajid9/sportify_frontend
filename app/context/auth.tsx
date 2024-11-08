@@ -19,8 +19,8 @@ interface SignOutResponse {
 
 interface AuthContextValue {
   signIn: (e: string, p: string) => Promise<SignInResponse>;
-  signUp: (username: string, password: string, date_of_birth: string, profile_picture: string) => Promise<SignInResponse>;
-  signOut: () => Promise<SignOutResponse>;
+  signUp: (username: string, password: string, profile_picture: string) => Promise<SignInResponse>;
+  signOut: (remove_token: boolean) => Promise<SignOutResponse>;
   user: string | null;
   location: Location | null;
   authInitialized: boolean;
@@ -72,7 +72,6 @@ export function Provider(props: ProviderProps) {
         !user &&
         !inAuthGroup
       ) {
-        console.log("IN HERE")
         router.navigate('/sign-in');
       } else if (user && inAuthGroup) {
         router.navigate("/");
@@ -160,8 +159,11 @@ export function Provider(props: ProviderProps) {
    *
    * @returns
    */
-  const logout = async (): Promise<SignOutResponse> => {
-    await removeNotificationToken()
+  const logout = async (remove_token: boolean): Promise<SignOutResponse> => {
+    if (remove_token)
+    {
+      await removeNotificationToken();
+    }
     await save("auth_token", null);
     await save("user", null);
     setAuth(null);
@@ -206,14 +208,12 @@ export function Provider(props: ProviderProps) {
   const createAcount = async (
     username: string,
     password: string,
-    date_of_birth: string,
     profile_picture: string,
   ): Promise<SignInResponse> => {
     try {
       const response = await axios.post(BASE_URL + '/auth/sign-up', {
         username: username,
         password: password,
-        date_of_birth: date_of_birth,
         profile_picture: profile_picture
       });
 

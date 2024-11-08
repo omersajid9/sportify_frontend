@@ -1,10 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert, Platform, Button, Pressable, ScrollView, ActionSheetIOS } from 'react-native';
-import RNDateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useAuth } from '../context/auth';
 import { Stack, useRouter } from 'expo-router';
-import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
-// import { GestureHandlerRootView, NativeViewGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import { FlashList } from '@shopify/flash-list';
 
 const SignUp = () => {
   const today = new Date();
@@ -12,39 +10,20 @@ const SignUp = () => {
   const { signUp } = useAuth();
   const userNameRef = useRef<string>('');
   const passwordRef = useRef<string>('');
-  const dateOfBirthRef = useRef<ActionSheetRef>(null);
-  const dateRef = useRef<Date>(minimumDate);
-  const [selectedAvatar, setSelectedAvatar] = useState<string>('https://avatar.iran.liara.run/public/22');
-  const [time, setTime] = useState<Date>(minimumDate);
   const router = useRouter();
 
-  const showDatePicker = () => {
-    DateTimePickerAndroid.open({
-      value: dateRef?.current,
-      onChange: (event: any, selectedDate: any) => {
-        if (event.type === 'set') {
-          dateRef.current = selectedDate;
-        }
-      },
-      mode: 'date',
-      is24Hour: true,
-    });
-  };
 
-  const onChangeTimePicker = (event: any, selectedDate?: Date) => {
-    const currentDate = selectedDate || time;
-    setTime(currentDate);
-    dateRef.current = currentDate;
-  };
+  const baseUrl = "https://mact-profile-avatar.s3.us-east-1.amazonaws.com/images/id/AV";
+  const avatars: number[] = [];
 
-  const avatars = [
-    'https://avatar.iran.liara.run/public/22',
-    'https://avatar.iran.liara.run/public/34',
-    'https://avatar.iran.liara.run/public/10',
-    'https://avatar.iran.liara.run/public/92',
-    'https://avatar.iran.liara.run/public/96',
-    'https://avatar.iran.liara.run/public/95'
-  ];
+  for (let i = 1; i <= 100; i += 4) {
+    avatars.push(i);
+  }
+
+  function convertToImageUrl(id: number) {
+    return `${baseUrl}${id}.png`;
+  }
+  const [selectedAvatar, setSelectedAvatar] = useState<string>(convertToImageUrl(1));
 
   return (
     <View className="justify-center items-center flex-1">
@@ -80,82 +59,61 @@ const SignUp = () => {
       </View>
 
 
-
-      {/* Date of Birth Picker */}
-      <View className="mb-4 w-3/4">
-        <Text className="text-lg mb-2 text-blue-900">Date of Birth</Text>
-        {Platform.OS == 'ios' ?
-                <View>
-                <View className=' mb-6 '>
-                  <Text className='text-lg mb-2'>{time.toDateString()}</Text>
-                  <View className='justify-center items-center'>
-                    <Pressable className=' p-4 bg-blue-900 rounded-lg ' onPress={() => dateOfBirthRef.current?.show()}>
-                      <Text className=' text-white font-bold' >Pick a time</Text>
-                    </Pressable>
-                  </View>
-                </View>
-                <ActionSheet
-                  ref={dateOfBirthRef}
-                  enableGesturesInScrollView={true}
-                  containerStyle={{
-                    height: 250,
-                    backgroundColor: 'white'
-                  }}
-                  indicatorStyle={{
-                    width: 100,
-                    maxHeight: 200
-                  }}>
-                  <RNDateTimePicker
-                    textColor='black'
-                    testID="dateTimePicker"
-                    value={time}
-                    minimumDate={minimumDate}
-                    mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    onChange={onChangeTimePicker}
-                  />
-                </ActionSheet>
-              </View>        
-          :
-          <View className=' mt-3 justify-center items-center'>
-            <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={showDatePicker}>
-              <Text className=' text-white font-bold' >Pick a date</Text>
-            </Pressable>
-          </View>
-        }
-      </View>
-
-      {/* Avatar Selection */}
       <View className="mb-4 w-3/4">
         <Text className="text-lg mb-2 text-blue-900">Profile Picture</Text>
-        <ScrollView className='flex-row' horizontal showsHorizontalScrollIndicator={false}>
-          {avatars.map((avatar, index) => (
-            <TouchableOpacity key={index} onPress={() => setSelectedAvatar(avatar)}>
-              <Image
-                source={{ uri: avatar }}
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 30,
-                  borderColor: selectedAvatar === avatar ? 'blue' : 'transparent',
-                  borderWidth: 2,
-                  marginHorizontal: 10
-                }}
-              />
-            </TouchableOpacity>
-          ))}
-
-        </ScrollView>
+        <FlashList
+          estimatedItemSize={50}
+          data={avatars}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View>
+              <TouchableOpacity onPress={() => setSelectedAvatar(convertToImageUrl(item))}>
+                <Image
+                  source={{ uri: convertToImageUrl(item) }}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    borderColor: selectedAvatar === convertToImageUrl(item) ? 'blue' : 'transparent',
+                    borderWidth: 2,
+                    margin: 5,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSelectedAvatar(convertToImageUrl(item + 1))}>
+                <Image
+                  source={{ uri: convertToImageUrl(item + 1) }}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    borderColor: selectedAvatar === convertToImageUrl(item + 1) ? 'blue' : 'transparent',
+                    borderWidth: 2,
+                    margin: 5,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
 
 
       <View className=' mt-3 justify-center items-center'>
         <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={async () => {
-          const date_of_birth = dateRef.current.toISOString().split('T')[0];
+          if (userNameRef.current.length < 3) {
+            Alert.alert("Username must be at least 3 characters long");
+            return;
+          }
+          if (passwordRef.current.length < 8) {
+            Alert.alert("Password must be at least 8 characters long");
+            return;
+          }
           const { data, error } = await signUp(
             userNameRef.current,
             passwordRef.current,
-            date_of_birth,
             selectedAvatar
           );
           if (data) {

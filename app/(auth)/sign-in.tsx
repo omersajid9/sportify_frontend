@@ -64,7 +64,7 @@ export default function SignIn() {
         <View className="mt-8">
           <Text
             className="text-center font-medium text-blue-500"
-            onPress={() => router.push("/sign-up")}
+            onPress={() => router.navigate("/sign-up")}
           >
             Click Here To Create A New Account
           </Text>
