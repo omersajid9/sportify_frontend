@@ -9,6 +9,7 @@ import SportIcon from './SportIcon';
 import axiosInstance from '../services/api';
 import Loader from './Loader';
 import ErrorBanner from './ErrorBanner';
+import { FlashList } from '@shopify/flash-list';
 
 const getUserProfile = (username: String | null) => {
   return useQuery({
@@ -49,14 +50,14 @@ export default function ProfileScreen({ user }: ProfileScreenProps) {
   };
 
   return (
-    <View className="flex-1 p-4">
-      <View className="mb-2 p-4 bg-transparent rounded-lg">
-        <View className="flex-row items-center mb-2">
+    <View className="flex-1 px-4 py-3">
+      <View className=" bg-transparent rounded-lg justify-center items-center">
+        <View className="flex-col items-center justify-center gap-3">
           <Image
             source={{ uri: userInfo.profile_picture }}
-            className=" w-14 h-14 rounded-full border-2 border-blue-900 mr-4"
+            className=" w-20 h-20 rounded-full border-2 border-blue-900"
           />
-          <View className="ml-4">
+          <View className="">
             <Text className="text-xl font-bold">{userInfo.username}</Text>
           </View>
         </View>
@@ -64,7 +65,7 @@ export default function ProfileScreen({ user }: ProfileScreenProps) {
 
       {ratings.length > 0 &&
 
-        <View className='h-26 mb-4'>
+        <View className='h-26 my-5'>
           <FlatList
             data={ratings}
             horizontal
@@ -94,15 +95,18 @@ export default function ProfileScreen({ user }: ProfileScreenProps) {
         </View>
       }
       <GestureHandlerRootView className='flex-1 h-full'>
-        <Text className="text-lg font-semibold mb-4">Scores</Text>
-        <FlatList
+        <Text className="text-lg font-semibold mb-4">Games</Text>
+        <FlashList
           data={games}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item: any) => item.id}
           renderItem={({ item }) => (
             <GamesPlayedView key={item.id} game={item} />
           )}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={
+              <Text className="text-center mt-4 text-gray-500">No games found</Text>
           }
         />
 

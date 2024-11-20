@@ -5,10 +5,11 @@ module.exports = {
     expo: {
       name: "mact",
       slug: "mact",
-      version: "1.0.2",
+      version: "1.0.3",
       orientation: "portrait",
       icon: "./assets/icon.png",
       scheme: "exp+tempty",
+      newArchEnabled: true,
       userInterfaceStyle: "light",
       splash: {
         image: "./assets/splash.png",
@@ -25,7 +26,9 @@ module.exports = {
         supportsTablet: true,
         bundleIdentifier: "com.omersajid9.mact",
         infoPlist: {
-          NSLocationAlwaysAndWhenInUseUsageDescription: "Turning on location services allows us to show you sessions nearby.",
+          NSLocationAlwaysAndWhenInUseUsageDescription: "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you.",
+          NSLocationWhenInUseUsageDescription: "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you.",
+          NSLocationAlwaysUsageDescription: "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you.",
         }
       },
       
@@ -46,7 +49,7 @@ module.exports = {
         [
           "expo-location",
           {
-            locationAlwaysAndWhenInUsePermission: "Turning on location services allows us to show you sessions nearby."
+            locationAlwaysAndWhenInUsePermission: "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you."
           }
         ],
         "expo-secure-store"

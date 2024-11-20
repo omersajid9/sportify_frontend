@@ -10,7 +10,7 @@ export default function Profile() {
 
     return (
         <View className='flex-1'>
-            <View className="flex-row justify-end p-4">
+            <View className="flex-row justify-end py-1 px-4">
                 <TouchableOpacity onPress={() => router.push("/settings")}>
                     <Ionicons name="settings" size={24} color="rgb(30 58 138)" />
                 </TouchableOpacity>

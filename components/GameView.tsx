@@ -40,16 +40,16 @@ export default function GameView({gameData, explore}: GameViewProps) {
   }
 
   const handleSwipeRight = () => {
-    flRef?.current.setNativeProps({
-      style: { display: 'none' }
-    });
+    // flRef?.current.setNativeProps({
+    //   style: { display: 'none' }
+    // });
     handleSubmit("No")
   };
 
   const handleSwipeLeft = () => {
-    flRef?.current.setNativeProps({
-      style: { display: 'none' }
-    });
+    // flRef?.current.setNativeProps({
+    //   style: { display: 'none' }
+    // });
     handleSubmit("Yes")
   };
 

@@ -4,11 +4,12 @@ import { FontAwesome, FontAwesome6, Ionicons } from '@expo/vector-icons';
 import { useAuth } from "../context/auth";
 
 export default function Layout() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   if (!user) return null;
   return (
     <Tabs>
       <Tabs.Screen
+        key={1}
         name="index"
         options={{
           title: "For You",
@@ -20,6 +21,7 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        key={2}
         name="community"
         options={{
           title: "Community",
@@ -31,6 +33,7 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        key={3}
         name="notifications"
         options={{
           title: "Notifications",
@@ -42,6 +45,8 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        key={4}
+
         name="profile"
         options={{
           title: "Profile",

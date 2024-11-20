@@ -9,35 +9,37 @@ import CommunityPage from './community';
 const Tab = createMaterialTopTabNavigator();
 
 export default function MyTabs() {
-    return (
-      <View className='flex-1 bg-black'>
-          <Tab.Navigator
-          screenOptions={{
-            tabBarContentContainerStyle: {
-              alignItems: 'center',
-              justifyContent: 'space-around',
-            },
-            tabBarIndicatorStyle: {
-              display: 'none',
-            },
-            tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' }, // Slightly larger and bolder text for better readability
-            tabBarItemStyle: { flex: 1 }, // Use flex to evenly distribute items
-            tabBarActiveTintColor: 'rgb(30 58 138)', // Active tab color
-            tabBarInactiveTintColor: 'gray', // Inactive tab color  
-          }}>
-          <Tab.Screen 
-            name="Explore" 
-            component={ExplorePage} 
-            options={{ title: 'Explore' }}
-          />
-          <Tab.Screen 
-            name="Going" 
-            component={GoingPage} 
-            options={{ title: 'Going' }}
-          />
-        </Tab.Navigator>
-        <PlusButton />
-      </View>
-    );
-  }
+  return (
+    <View className='flex-1 bg-black'>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarContentContainerStyle: {
+            alignItems: 'center',
+            justifyContent: 'space-around',
+          },
+          tabBarIndicatorStyle: {
+            display: 'none',
+          },
+          tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' }, // Slightly larger and bolder text for better readability
+          tabBarItemStyle: { flex: 1 }, // Use flex to evenly distribute items
+          tabBarActiveTintColor: 'rgb(30 58 138)', // Active tab color
+          tabBarInactiveTintColor: 'gray', // Inactive tab color  
+        }}>
+        <Tab.Screen
+          key={1}
+          name="Explore"
+          component={ExplorePage}
+          options={{ title: 'Explore' }}
+        />
+        <Tab.Screen
+          key={2}
+          name="Going"
+          component={GoingPage}
+          options={{ title: 'Going' }}
+        />
+      </Tab.Navigator>
+      <PlusButton />
+    </View>
+  );
+}
 

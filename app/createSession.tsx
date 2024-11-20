@@ -444,6 +444,7 @@ export default function CreateSession() {
                                     testID="dateTimePicker"
                                     value={durationTime}
                                     mode="countdown"
+                                    minuteInterval={10}
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                     onChange={onChangeDurationTimePicker}
                                 />

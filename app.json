@@ -2,7 +2,7 @@
   "expo": {
     "name": "mact",
     "slug": "mact",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "exp+tempty",
@@ -22,7 +22,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.omersajid9.mact",
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Turning on location services allows us to show you sessions nearby."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you.",
+        "NSLocationWhenInUseUsageDescription": "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you.",
+        "NSLocationAlwaysUsageDescription": "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you."
       }
     },
     "android": {
@@ -41,12 +43,13 @@
         "projectId": "96aa4bb0-df91-4f7c-9dd1-360cb6dcb2e5"
       }
     },
+    "newArchEnabled": true,
     "plugins": [
       "expo-router",
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Turning on location services allows us to show you sessions nearby."
+          "locationAlwaysAndWhenInUsePermission": "Allowing location access helps us suggest nearby sports sessions and games so you can connect with players and join activities happening around you."
         }
       ],
       "expo-secure-store"
