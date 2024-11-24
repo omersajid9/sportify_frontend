@@ -1,10 +1,11 @@
 import { View, Text, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '../context/auth';
+import { useAuth } from './context/auth';
 import { FlashList } from '@shopify/flash-list';
-import axiosInstance from '../../services/api';
+import axiosInstance from '../services/api';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import AuthWall from '../components/AuthWall';
 
 const fetchNotifications = (user: string | null) => {
   return useQuery({
@@ -26,6 +27,10 @@ export default function Notifications() {
     await refetch();
     setRefreshing(false);
   };
+
+  if (!user) {
+    return <AuthWall />
+}
 
   return (
     <View className='h-full p-4'>

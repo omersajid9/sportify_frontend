@@ -51,7 +51,9 @@ export default function GoogleSearchPlaces({ setPredictions, query, setQuery, pl
                 inputContainerStyle={styles.inputContainer}
                 containerStyle={styles.searchBarContainer}
                 rightIconContainerStyle={styles.rightIcon}
+                inputStyle={styles.inputText}
                 clearTextOnFocus={false}
+                // placeholderTextColor={'rgb(30 58 138)'}
             />
         </View>
     );
@@ -61,8 +63,11 @@ const styles = StyleSheet.create({
     searchBarContainer: {
         backgroundColor: 'transparent',
     },
+    inputText: {
+        // color: 'rgb(30 58 138)',
+    },
     inputContainer: {
-        backgroundColor: '#EAEAEA',
+        backgroundColor: '#f5f5f5',
         borderRadius: 8,
         flex: 1,
         alignItems: 'center',
@@ -75,7 +80,9 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         fontSize: 18,
         lineHeight: 28,
-    
+        color: '#dbeafe',
+        tintColor: '#dbeafe',
+
     },
     rightIcon: {
         justifyContent: 'center',

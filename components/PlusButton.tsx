@@ -3,58 +3,70 @@ import { View, TouchableOpacity, Text, Pressable } from 'react-native';
 import { Modal } from 'react-native';
 import { Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import Animated, { FadeInDown, FadeInLeft, FadeInRight, FadeInUp, FadeOutLeft, Layout, runOnJS } from 'react-native-reanimated';
+import Animated, { BounceIn, FadeInDown, FadeInLeft, FadeInRight, FadeInUp, FadeOutLeft, Layout, runOnJS } from 'react-native-reanimated';
+import { AnimatePresence } from 'moti';
+
+import { MotiView } from 'moti'; // Import MotiView
 
 export default function PlusButton() {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View className="absolute bottom-0 left-1/2 -translate-x-1/2 items-center justify-end pb-4">
-      {/* Circular Button */}
+    <View className="absolute bottom-20 left-1/2 -translate-x-1/2 items-center justify-end pb-4">
       <TouchableOpacity
-        className="w-16 h-16 rounded-full bg-blue-900 items-center justify-center "
-        onPress={() => setModalVisible(true)}
-      >
-        <Octicons name="plus" size={24} color="white" />
+        className="w-16 h-16 rounded-full bg-blue-100 border-blue-900 border-[3px] items-center justify-center "
+        onPress={() => setModalVisible(true)}>
+        <Octicons name="plus" size={24} color="rgb(30 58 138)" />
       </TouchableOpacity>
 
       <Modal
         transparent={true}
         visible={modalVisible}
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
+        onRequestClose={() => setModalVisible(false)}>
         <Pressable
           className="flex-1 bg-black opacity-50"
-          onPress={() => setModalVisible(false)}
-        />
+          onPress={() => setModalVisible(false)}/>
+        <View className='relative'>
+          <View className="absolute bottom-safe-offset-24 left-1/2 transform -translate-x-1/2 bg-transparent p-6 rounded-lg ">
+            <AnimatePresence>
+              {modalVisible ?
+                <>
+                  <MotiView
+                    from={{ opacity: 0, translateY: 20 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    exit={{ opacity: 0, translateY: 20 }}
+                    transition={{ type: 'timing', duration: 300 }}>
+                    <TouchableOpacity
+                      className="bg-blue-100 border-blue-900 border-2 px-6 py-4 rounded-full mb-2"
+                      onPress={() => {
+                        setModalVisible(false);
+                        router.push('/createSession');
+                      }}>
+                      <Text className="text-blue-900 font-bold text-center">Create Session</Text>
+                    </TouchableOpacity>
+                  </MotiView>
 
-
-        <Animated.View
-          collapsable={false}
-          entering={FadeInDown.duration(500)}
-        >
-          <View className="absolute bottom-40 left-1/2 transform -translate-x-1/2 bg-transparent p-6 rounded-lg ">
-            <TouchableOpacity
-              className="bg-blue-900 px-6 py-4 rounded-full mb-2"
-              onPress={() => {
-                setModalVisible(false);
-                router.push('/createSession');
-              }}
-            >
-              <Text className="text-white text-center">Create Session</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="bg-blue-900 px-6 py-4 rounded-full mb-2"
-              onPress={() => {
-                setModalVisible(false);
-                router.push('/reportScore');
-              }}
-            >
-              <Text className="text-white text-center">Report Score</Text>
-            </TouchableOpacity>
+                  <MotiView
+                    from={{ opacity: 0, translateY: 20 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    exit={{ opacity: 0, translateY: 20 }}
+                    transition={{ type: 'timing', duration: 300, delay: 150 }}>
+                    <TouchableOpacity
+                      className="bg-blue-100 border-blue-900 border-2 px-6 py-4 rounded-full mb-2"
+                      onPress={() => {
+                        setModalVisible(false);
+                        router.push('/reportScore');
+                      }}>
+                      <Text className="text-blue-900 font-bold text-center">Report Score</Text>
+                    </TouchableOpacity>
+                  </MotiView>
+                </>
+                :
+                null}
+            </AnimatePresence>
           </View>
-        </Animated.View>
+        </View>
       </Modal>
     </View>
   );

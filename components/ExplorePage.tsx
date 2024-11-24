@@ -33,7 +33,7 @@ const getGames = (sport: string, date: string, user: string | null, lat: number,
     return useQuery({
         queryKey: ['sessions', sport, date, user, lat, lon], queryFn: async () => {
             const response = await axiosInstance.get('/search/explore_sessions', { params: { username: user, lat: lat, lng: lon, sport: sport, date: (date == "null" ? null : date) } });
-            return response.data.data.sessions;  // Assuming the response data is in the correct format
+            return response.data.data.sessions;
         },
         enabled: ready
     })
@@ -161,28 +161,26 @@ export default function ExplorePage() {
 
 
             <View className='flex-row justify-between my-2'>
-                <View className='flex-1 ' >
+                <View className='flex-1' >
                     <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                 </View>
-                <View className=" items-center justify-center pr-4">
-                    <View className="flex-row space-x-4">
+                    <View className="flex-row gap-1 items-center justify-center mr-2">
                         <TouchableOpacity
-                            className={`px-4 py-2 rounded-lg ${view === 'list' ? 'bg-blue-900' : 'bg-gray-300'
+                            className={`px-4 py-2 rounded-lg border-2 ${view === 'list' ? 'bg-blue-100 border-blue-900' : 'bg-neutral-100 border-neutral-200'
                                 }`}
                             onPress={() => setView('list')}
                         >
-                            <Text className={`font-semibold ${view === 'list' ? 'text-white' : 'text-black'}`}>List</Text>
+                            <Text className={`font-semibold ${view === 'list' ? 'text-blue-900' : 'text-black'}`}>List</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            className={`px-4 py-2 rounded-lg ${view === 'map' ? 'bg-blue-900' : 'bg-gray-300'
+                            className={`px-4 py-2 rounded-lg border-2 ${view === 'map' ? 'bg-blue-100 border-blue-900' : 'bg-neutral-100 border-neutral-200'
                                 }`}
                             onPress={() => setView('map')}
                         >
-                            <Text className={`font-semibold ${view === 'map' ? 'text-white' : 'text-black'}`}>Map</Text>
+                            <Text className={`font-semibold ${view === 'map' ? 'text-blue-900' : 'text-black'}`}>Map</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
             </View>
 
 

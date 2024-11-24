@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text, Image } from 'react-native';
-import { GestureHandlerRootView, Swipeable, TouchableOpacity } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
 import { useAuth } from '../app/context/auth';
@@ -153,28 +154,30 @@ export default function GameView({gameData, explore}: GameViewProps) {
 
       {/* Skill Level Tag */}
       {/* <View className="self-start bg-blue-100 px-3 py-1 rounded-full">
-            <Text className="text-blue-700 text-xs">{session.skillLevel}</Text>
+            <Text className="text-blue-700 text-xs">session.skillLevel</Text>
         </View> */}
     </View>
   );
 
   return (
     <GestureHandlerRootView className='my-1 mx-4'>
-      <Swipeable
-        leftThreshold={200}
+      {/* <Swipeable
+        leftThreshold={100}
         rightThreshold={100}
         renderLeftActions={LeftSwipeActions}
         renderRightActions={rightSwipeActions}
         onSwipeableOpen={(direction) => {
           direction === 'left' ? handleSwipeLeft() : handleSwipeRight()
         }}
+        overshootFriction={9}
         enabled={explore}
-      >
+      > */}
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => router.push("/joinSession/" + session.id)}>
           {renderContent()}
         </TouchableOpacity>
-      </Swipeable>
+      {/* </Swipeable> */}
     </GestureHandlerRootView>
   );
 }

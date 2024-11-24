@@ -11,7 +11,7 @@ import Loader from './Loader';
 import ErrorBanner from './ErrorBanner';
 import { FlashList } from '@shopify/flash-list';
 
-const getUserProfile = (username: String | null) => {
+export const getUserProfile = (username: String | null) => {
   return useQuery({
     queryKey: ['user_profile', username], queryFn: async () => {
       const response = await axiosInstance.get('/player/profile', { params: { username: username } });

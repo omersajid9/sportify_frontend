@@ -4,15 +4,19 @@ import ExplorePage from '../../components/ExplorePage';
 import { View, Text } from 'react-native';
 import PlusButton from '../../components/PlusButton';
 import GoingPage from '../../components/GoingPage';
-import CommunityPage from './community';
+import CommunityPage from '../../components/community';
 
-const Tab = createMaterialTopTabNavigator();
+// import { NavigationContainer } from '@react-navigation/native';
+
+// const Tab = createMaterialTopTabNavigator();
 
 export default function MyTabs() {
   return (
-    <View className='flex-1 bg-black'>
-      <Tab.Navigator
+    <View className='flex-1'>
+      <ExplorePage />
+      {/* <Tab.Navigator
         screenOptions={{
+          lazy: true,
           tabBarContentContainerStyle: {
             alignItems: 'center',
             justifyContent: 'space-around',
@@ -24,21 +28,17 @@ export default function MyTabs() {
           tabBarItemStyle: { flex: 1 }, // Use flex to evenly distribute items
           tabBarActiveTintColor: 'rgb(30 58 138)', // Active tab color
           tabBarInactiveTintColor: 'gray', // Inactive tab color  
-        }}>
+        }}
+        >
         <Tab.Screen
-          key={1}
           name="Explore"
-          component={ExplorePage}
-          options={{ title: 'Explore' }}
-        />
+          component={ExplorePage}/>
         <Tab.Screen
-          key={2}
           name="Going"
-          component={GoingPage}
-          options={{ title: 'Going' }}
-        />
-      </Tab.Navigator>
-      <PlusButton />
+          component={GoingPage}/>
+      </Tab.Navigator> */}
+      {/* <PlusButton /> */}
+      
     </View>
   );
 }

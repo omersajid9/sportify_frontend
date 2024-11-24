@@ -1,6 +1,6 @@
 module.exports = {
     // Environment variables
-    BASE_URL: process.env.BASE_URL || "https://omerbackend.store",
+    BASE_URL: "http://10.0.0.171:8080",
     GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY || "AIzaSyDAQ2bdLjVK52X8cu8ZeuLKU_wbl-gcNTs",
     expo: {
       name: "mact",

@@ -68,14 +68,14 @@ export function Provider(props: ProviderProps) {
     useEffect(() => {
       const inAuthGroup = segments[0] === "(auth)";
       if (!authInitialized) return;
-      if (
-        !user &&
-        !inAuthGroup
-      ) {
-        router.navigate('/sign-in');
-      } else if (user && inAuthGroup) {
-        router.navigate("/");
-      }
+      // if (
+      //   !user &&
+      //   !inAuthGroup
+      // ) {
+      //   router.navigate('/sign-in');
+      // } else if (user && inAuthGroup) {
+      // }
+      // router.navigate("/");
     }, [user, segments, authInitialized]);
   };
 

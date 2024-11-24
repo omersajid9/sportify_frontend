@@ -26,8 +26,8 @@ const SignUp = () => {
   const [selectedAvatar, setSelectedAvatar] = useState<string>(convertToImageUrl(1));
 
   return (
-    <View className="justify-center items-center flex-1">
-      <Stack.Screen options={{ title: "Sign Up" }} />
+    <View className="justify-center items-center">
+      {/* <Stack.Screen options={{ title: "Sign Up" }} /> */}
       {/* Username Input */}
       <View className="mb-4 w-3/4">
         <Text className="text-lg mb-2 text-blue-900">Username</Text>

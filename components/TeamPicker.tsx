@@ -17,7 +17,7 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
     }
 
     return (
-        <SafeAreaView className="flex-1">
+        <View className="flex-1">
             <View className="rounded-lg mx-4 overflow-hidden">
 
                 <TouchableOpacity
@@ -86,7 +86,7 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
                     </View>
                 ))}
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 

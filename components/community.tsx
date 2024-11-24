@@ -4,11 +4,11 @@ import { View, Text, StyleSheet, RefreshControl } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
 import { SearchBarBaseProps } from 'react-native-elements/dist/searchbar/SearchBar';
-import PlayerSearchView from '../../components/PlayerSearchView';
+import PlayerSearchView from './PlayerSearchView';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useAuth } from '../context/auth';
-import axiosInstance from '../../services/api';
+import { useAuth } from '../app/context/auth';
+import axiosInstance from '../services/api';
 
 const SafeSearchBar = (SearchBar as unknown) as React.FC<SearchBarBaseProps>;
 

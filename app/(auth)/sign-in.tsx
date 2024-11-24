@@ -9,6 +9,7 @@ import { useAuth } from "../context/auth";
 import { Stack, useRouter } from "expo-router";
 import { useRef } from "react";
 import React from "react";
+import Apple from "../../ExternalAuth/apple";
 
 export default function SignIn() {
   const { signIn } = useAuth();
@@ -18,8 +19,8 @@ export default function SignIn() {
   const passwordRef = useRef("");
   return (
     <>
-      <Stack.Screen options={{ title: "Sign In", headerShown: true }} />
-      <View className="flex-1 justify-center items-center">
+      {/* <Stack.Screen options={{ title: "Sign In", headerShown: true }} /> */}
+      <View className=" justify-center items-center">
         <View className="mb-4 w-3/4">
           <Text className="text-lg mb-2 text-blue-900">Username</Text>
           <TextInput
@@ -69,6 +70,8 @@ export default function SignIn() {
             Click Here To Create A New Account
           </Text>
         </View>
+
+        {/* <Apple/> */}
       </View>
     </>
   );

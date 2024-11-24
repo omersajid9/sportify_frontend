@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ADEB5F"
+      "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -19,6 +19,10 @@
       "**/*"
     ],
     "ios": {
+      "usesAppleSignIn": true,
+      "entitlements": {
+        "com.apple.developer.applesignin": ["Default"]
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.omersajid9.mact",
       "infoPlist": {
@@ -46,6 +50,7 @@
     "newArchEnabled": true,
     "plugins": [
       "expo-router",
+      "expo-apple-authentication",
       [
         "expo-location",
         {

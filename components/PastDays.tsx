@@ -13,14 +13,14 @@ import AuthWall from "./AuthWall";
 
 const getUpcomingGames = (user: string | null, location: { lat: number, lng: number }) => {
     return useQuery({
-        queryKey: ['sessions', 'going', 'user'], queryFn: async () => {
-            const response = await axiosInstance.get('/search/going_sessions', { params: { username: user, lat: location.lat, lng: location.lng } });
+        queryKey: ['sessions', 'past', 'user'], queryFn: async () => {
+            const response = await axiosInstance.get('/search/past_sessions', { params: { username: user, lat: location.lat, lng: location.lng } });
             return response.data.data.sessions;
         }
     })
 };
 
-export default function GoingPage() {
+export default function PastPage() {
     const { user, location } = useAuth();
     const Location = location ? location : { lat: 40, lng: -74 };
 

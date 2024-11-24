@@ -4,9 +4,14 @@ import ProfilePage from '../../components/ProfilePage';
 import { useAuth } from '../context/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import AuthWall from '../../components/AuthWall';
 
 export default function Profile() {
     const { user } = useAuth();
+
+    if (!user) {
+        return <AuthWall />
+    }    
 
     return (
         <View className='flex-1'>
