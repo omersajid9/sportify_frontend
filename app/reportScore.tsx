@@ -9,11 +9,12 @@ import TeamPicker from '../components/TeamPicker';
 import axiosInstance from '../services/api';
 import Loader from '../components/Loader';
 import ErrorBanner from '../components/ErrorBanner';
+import Entypo from '@expo/vector-icons/Entypo';
 
-const getUpcomingSessions = (username: string | null) => useQuery({
-  queryKey: ['sessions', 'to_report ', username],
+const getUpcomingSessions = (user_id: string | undefined) => useQuery({
+  queryKey: ['sessions', 'to_report ', user_id],
   queryFn: async () => {
-    const response = await axiosInstance.get('/search/reportable_sessions', { params: { username: username || "" } });
+    const response = await axiosInstance.get('/search/reportable_sessions', { params: { user_id: user_id || "" } });
     return response.data.data.sessions;
   }
 });
@@ -21,17 +22,25 @@ const getUpcomingSessions = (username: string | null) => useQuery({
 const getUsernames = (id: string | undefined) => useQuery({
   queryKey: ['rsvp', 'usernames', id],
   queryFn: async () => {
+    console.log(id)
     const response = await axiosInstance.get('/session/players', { params: { session_id: id } });
+    console.log(response)
     return response.data.data.players;
   },
   enabled: !!id
 });
 
+interface UserDetails {
+  id: string;
+  username: string;
+  profile_picture: string;
+}
+
 export default function ReportScore() {
   const { user } = useAuth();
 
-  const [team1Usernames, setTeam1Usernames] = useState<String[]>([]);
-  const [team2Usernames, setTeam2Usernames] = useState<String[]>([]);
+  const [team1Users, setTeam1Users] = useState<UserDetails[]>([]);
+  const [team2Users, setTeam2Users] = useState<UserDetails[]>([]);
 
   const [session, setSession] = useState<any>(null);
   const [scores, setScores] = useState([{ team1: '', team2: '' }]);
@@ -42,15 +51,19 @@ export default function ReportScore() {
   // ref for pickers | for android
   const sessionPickerRef = useRef<any>(null);
 
-  // get data about session and players for the session
-  const { data: sessions, isLoading: sessionsLoading, error: sessionsError, refetch: refetchSession } = getUpcomingSessions(user);
-  const { data: usernames, isLoading: usernameLoading, error: usernameError, refetch: refetchUsername } = getUsernames(session?.id);
-
   useEffect(() => {
-    setTeam1Usernames([]);
-    setTeam2Usernames([]);
+    setTeam1Users([]);
+    setTeam2Users([]);
     setScores([{ team1: '', team2: '' }]);
   }, [session])
+
+
+  // get data about session and players for the session
+  const { data: sessions, isLoading: sessionsLoading, error: sessionsError, refetch: refetchSession } = getUpcomingSessions(user?.id);
+  const { data: usernames, isLoading: usernameLoading, error: usernameError, refetch: refetchUsername } = getUsernames(session?.id);
+
+  // array1.findLast((element) => element > 45)
+  console.log(usernames, usernameError)
 
   if (sessionsLoading || usernameLoading) {
     return <Loader />;
@@ -61,36 +74,41 @@ export default function ReportScore() {
   }
 
 
-  if (user && session && !team1Usernames.includes(user)) {
-    team1Usernames.push(user);
-  }
 
+
+
+  // if (user && session && !team1Users.includes(user.username)) {
+  //   team1Usernames.push(user.username);
+  // }
 
 
   // filter out users from team1 and team2
-  const otherUsernames = usernames?.filter((u: any) => !team1Usernames.includes(u.username) && !team2Usernames.includes(u.username)).map((u: any) => u.username);
+  const otherUsers = usernames?.filter((u: UserDetails) =>
+    !team1Users.find(user => user.id === u.id) &&
+    !team2Users.find(user => user.id === u.id)
+  );
 
-  const toggleTeam1 = (toggleUsername: String) => {
-    if (team1Usernames.includes(toggleUsername)) {
-      setTeam1Usernames(team1Usernames.filter(name => name !== toggleUsername));
+  const toggleTeam1 = (toggleUser: UserDetails) => {
+    if (team1Users.find(user => user.id === toggleUser.id)) {
+      setTeam1Users(team1Users.filter(user => user.id !== toggleUser.id));
     } else {
-      setTeam1Usernames([...team1Usernames, toggleUsername]);
+      setTeam1Users([...team1Users, toggleUser]);
     }
-  }
-  const toggleTeam2 = (toggleUsername: String) => {
-    if (team2Usernames.includes(toggleUsername)) {
-      setTeam2Usernames(team2Usernames.filter(name => name !== toggleUsername));
+  };
+  const toggleTeam2 = (toggleUser: UserDetails) => {
+    if (team2Users.find(user => user.id === toggleUser.id)) {
+      setTeam2Users(team2Users.filter(user => user.id !== toggleUser.id));
     } else {
-      setTeam2Usernames([...team2Usernames, toggleUsername]);
+      setTeam2Users([...team2Users, toggleUser]);
     }
-  }
+  };
 
   const handleSubmit = async () => {
     if (!session) {
       Alert.alert("Error", "Please select a session to report.");
       return;
     }
-    if (team2Usernames.length === 0) {
+    if (team2Users.length === 0) {
       Alert.alert("Error", "Please select an opponent.");
       return;
     }
@@ -103,19 +121,19 @@ export default function ReportScore() {
 
     const reports = {
       session_id: session.id,
-      team_1_usernames: team1Usernames,
-      team_2_usernames: team2Usernames,
-      scores: scoresReport
+      team_1_user_ids: team1Users.map(user => user.id),
+      team_2_user_ids: team2Users.map(user => user.id),
+      scores: scoresReport,
     };
 
     const gameSubmit = {
-      reporter_username: user,
-      reports: [reports]
+      reporter_user_id: user?.id,
+      reports: [reports],
     };
 
     try {
       const response = await axiosInstance.post('/game/report', gameSubmit, {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
       router.navigate("/");
     } catch (error) {
@@ -154,22 +172,21 @@ export default function ReportScore() {
       <ScrollView>
 
         <View className="flex-1 items-center px-6 h-full">
-          <View className="my-4 w-full">
-            <Text className="text-lg font-bold">Select Session</Text>
-          </View>
 
-          <View>
+          <View className=' flex-row py-2 px-2 justify-between'>
             <TouchableOpacity
-              className="border-blue-900 border-2 p-4 rounded-lg justify-center items-center text-center"
+              className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
               onPress={onSessionPress}
             >
               <Text className="text-center">{session ? session.session_name : "Select Session"}</Text>
+              <Entypo name="chevron-down" size={24} color="black" />
             </TouchableOpacity>
           </View>
 
           {Platform.OS == 'ios' ?
             <ActionSheet ref={sessionRef} containerStyle={{ height: 300, backgroundColor: 'white' }}>
               <Picker
+                itemStyle={{ color: "black" }}
                 selectedValue={session?.id}
                 onValueChange={(sessionId: any) => {
                   const selectedSession = sessions?.find((session: any) => session.id === sessionId);
@@ -200,31 +217,42 @@ export default function ReportScore() {
 
 
           <View className="my-6 w-full">
-            <Text className="text-lg font-bold">Game Details</Text>
+            <Text className="text-lg font-bold text-center">Scoreboard</Text>
           </View>
 
           <View className='flex-row'>
-            <TeamPicker remainingPlayers={otherUsernames} selectedPlayers={team1Usernames} toggleMember={toggleTeam1} placeholder={"Select friend"} />
-            <TeamPicker remainingPlayers={otherUsernames} selectedPlayers={team2Usernames} toggleMember={toggleTeam2} placeholder={"Select opponent"} />
+            <TeamPicker
+              remainingPlayers={otherUsers}
+              selectedPlayers={team1Users}
+              toggleMember={toggleTeam1}
+              placeholder={"Select friend"}
+            />
+            <TeamPicker
+              remainingPlayers={otherUsers}
+              selectedPlayers={team2Users}
+              toggleMember={toggleTeam2}
+              placeholder={"Select opponent"}
+            />
           </View>
 
-          <Text className="text-lg my-4 font-bold">Score</Text>
-          {scores.map((score, index) => (
-            <View key={index} className="flex-row justify-evenly items-center w-full mb-4">
-              <TextInput
-                className="border-2 border-blue-900 rounded-lg p-2 h-16 w-14 text-center text-2xl"
-                keyboardType="numeric"
-                value={score.team1}
-                onChangeText={value => handleScoreChange(index, 'team1', value)}
-              />
-              <TextInput
-                className="border-2 border-blue-900 rounded-lg p-2 h-16 w-14 text-center text-2xl"
-                keyboardType="numeric"
-                value={score.team2}
-                onChangeText={value => handleScoreChange(index, 'team2', value)}
-              />
-            </View>
-          ))}
+          <View className='py-6 w-full'>
+            {scores.map((score, index) => (
+              <View key={index} className="flex-row justify-evenly items-center w-full mb-4">
+                <TextInput
+                  className="border-2 border-blue-900 rounded-lg p-2 h-16 w-14 text-center text-2xl"
+                  keyboardType="numeric"
+                  value={score.team1}
+                  onChangeText={value => handleScoreChange(index, 'team1', value)}
+                />
+                <TextInput
+                  className="border-2 border-blue-900 rounded-lg p-2 h-16 w-14 text-center text-2xl"
+                  keyboardType="numeric"
+                  value={score.team2}
+                  onChangeText={value => handleScoreChange(index, 'team2', value)}
+                />
+              </View>
+            ))}
+          </View>
 
           <View className="my-6">
             <Button title="Submit" onPress={handleSubmit} />

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { getValueFor, save } from '../app/context/store';
 import { BASE_URL } from '../app.config';
+import { router } from 'expo-router';
+import eventEmitter from './eventEmitter';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
@@ -25,11 +27,14 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log(error.response.status)
+    console.log(error.response.statusText)
     if (error.response?.status === 401) {
-      await save("user", null);
-      await save("auth_token", null);
+      eventEmitter.emit('refresh-token');
+      const originalRequest = error.config;
+      return axiosInstance(originalRequest);
     }
-    return Promise.reject(error);
+    console.log("HEHERE")
   }
 );
 

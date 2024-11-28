@@ -10,7 +10,7 @@ export default function Layout() {
   const { user } = useAuth();
   const segments = useSegments();
 
-  const showPlus = segments[segments.length - 1] == "home"
+  const showPlus = segments[segments.length - 1] == "home" || segments[segments.length - 1] == "(tabs)"
 
   return (
     <>

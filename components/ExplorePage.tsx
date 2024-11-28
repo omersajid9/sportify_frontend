@@ -27,12 +27,12 @@ function formatDate(date: Date) {
     return `${year}-${month}-${day}`; // Return the formatted date string
 }
 
-const getGames = (sport: string, date: string, user: string | null, lat: number, lon: number, ready: boolean) => {
+const getGames = (sport: string, date: string, user_id: string | undefined, lat: number, lon: number, ready: boolean) => {
     date = formatDate(new Date(date));
 
     return useQuery({
-        queryKey: ['sessions', sport, date, user, lat, lon], queryFn: async () => {
-            const response = await axiosInstance.get('/search/explore_sessions', { params: { username: user, lat: lat, lng: lon, sport: sport, date: (date == "null" ? null : date) } });
+        queryKey: ['sessions', sport, date, user_id, lat, lon], queryFn: async () => {
+            const response = await axiosInstance.get('/search/explore_sessions', { params: { user_id: user_id, lat: lat, lng: lon, sport: sport, date: (date == "null" ? null : date) } });
             return response.data.data.sessions;
         },
         enabled: ready
@@ -106,7 +106,7 @@ export default function ExplorePage() {
         })
     }
 
-    var { data: games, isLoading, error, refetch } = getGames(selectedSport, selectedDate, user, region.latitude, region.longitude, fetchingSports);
+    var { data: games, isLoading, error, refetch } = getGames(selectedSport, selectedDate, user?.id, region.latitude, region.longitude, fetchingSports);
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -161,7 +161,7 @@ export default function ExplorePage() {
 
 
             <View className='flex-row justify-between my-2'>
-                <View className='flex-1' >
+                <View className='flex-1 border-2 border-blue-900 rounded-lg mx-4' >
                     <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                 </View>
                     <View className="flex-row gap-1 items-center justify-center mr-2">
@@ -185,7 +185,7 @@ export default function ExplorePage() {
 
 
 
-            {isLoading ?
+            {isLoading && view === 'list' ?
                 <Loader />
                 : error ?
                     <ErrorBanner message='Failed to fetch sessions' refetch={refetch} />
@@ -226,7 +226,7 @@ export default function ExplorePage() {
                                 }
                             />
                             :
-                            <View className='flex-1 m-2'>
+                            <View className='flex-1 mx-2'>
                                 <GameMap games={games} region={mapRegion} setRegion={setMapRegion} />
                                 <ReloadButton reload={() => { setRegion(mapRegion); onRefresh(); }} />
                             </View>

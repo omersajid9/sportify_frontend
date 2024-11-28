@@ -6,9 +6,40 @@ import { BASE_URL } from "../../app.config";
 import { getValueFor, save } from "./store";
 import Location, { getCurrentPositionAsync, getLastKnownPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
 import axiosInstance from "../../services/api";
+import eventEmitter from "../../services/eventEmitter";
 
 interface SignInResponse {
   data?: string;
+  error?: Error | string;
+}
+
+
+interface OptSMSResponse {
+
+}
+
+export interface User {
+  id: string,
+  username: string,
+  first_name?: string,
+  last_name?: string,
+  password?: string,
+  auth_type: string,
+  auth_id: string,
+  profile_picture: string
+}
+
+interface EditProfile {
+  user_id: string,
+  first_name?: string,
+  last_name?: string,
+  password?: string,
+  username?: string,
+  profile_page?: string
+}
+
+interface LogInResponse {
+  data?: User;
   error?: Error | string;
 }
 
@@ -18,10 +49,13 @@ interface SignOutResponse {
 }
 
 interface AuthContextValue {
-  signIn: (e: string, p: string) => Promise<SignInResponse>;
-  signUp: (username: string, password: string, profile_picture: string) => Promise<SignInResponse>;
+  sendOptSMS: (phone: String) => Promise<OptSMSResponse>,
+  logIn: (auth_type: String, auth_id: String, passcode?: String) => Promise<LogInResponse>,
+  editProfile: (data: EditProfile) => Promise<any>,
+  // signIn: (e: string, p: string) => Promise<SignInResponse>;
+  // signUp: (username: string, password: string, profile_picture: string) => Promise<SignInResponse>;
   signOut: (remove_token: boolean) => Promise<SignOutResponse>;
-  user: string | null;
+  user: User | null;
   location: Location | null;
   authInitialized: boolean;
 }
@@ -42,18 +76,18 @@ const AuthContext = React.createContext<AuthContextValue | undefined>(
 );
 
 export function Provider(props: ProviderProps) {
-  const [user, setAuth] = React.useState<string | null>(null);
+  const [user, setAuth] = React.useState<User | null>(null);
   const [authInitialized, setAuthInitialized] = React.useState<boolean>(false);
   const [location, setLocation] = React.useState<Location | null>(null);
 
-  const useProtectedRoute = (user: string | null) => {
+  const useProtectedRoute = (user: User | null) => {
     const segments = useSegments();
     const router = useRouter();
 
     useEffect(() => {
       const reStoreUser = async () => {
         const store_user = await getValueFor("user");
-        if (user && store_user != user) {
+        if (user && store_user.id != user.id) {
           if (store_user) {
             setAuth(store_user);
           } else {
@@ -68,6 +102,19 @@ export function Provider(props: ProviderProps) {
     useEffect(() => {
       const inAuthGroup = segments[0] === "(auth)";
       if (!authInitialized) return;
+
+      const handleRefershToken = async () => {
+        // console.log("YAYYY")
+        await refreshToken(); // Call logout when the event is emitted
+      };
+      // router.replace('/onboarding');
+
+  
+      eventEmitter.on('refresh-token', handleRefershToken);
+      return () => {
+        eventEmitter.off('refresh-token', handleRefershToken);
+      };
+
       // if (
       //   !user &&
       //   !inAuthGroup
@@ -114,14 +161,13 @@ export function Provider(props: ProviderProps) {
     init();
   }, []);
 
-
   const removeNotificationToken = async () => {
     const token = await getValueFor("notification_token");
     const user = await getValueFor("user");
     if (token && user) {
       try {
         const data = {
-          username: user,
+          user_id: user.id,
           token: token
         }
         const response = await axiosInstance.post('/notification/remove_token', data, {
@@ -130,7 +176,7 @@ export function Provider(props: ProviderProps) {
           }
         });
       } catch (error) {
-        console.error('Error saving notification token:', error);
+        console.error('Error removing notification token:', error);
       }
     }
   }
@@ -141,7 +187,7 @@ export function Provider(props: ProviderProps) {
     if (token && user) {
       try {
         const data = {
-          username: user,
+          user_id: user.id,
           token: token
         }
         const response = await axiosInstance.post('/notification/report_token', data, {
@@ -149,6 +195,9 @@ export function Provider(props: ProviderProps) {
             'Content-Type': 'application/json', // Ensure the request is in JSON format
           }
         });
+        if (response.status == 200) {
+          console.log("SUCCESS")
+        }
       } catch (error) {
         console.error('Error saving notification token:', error);
       }
@@ -160,8 +209,7 @@ export function Provider(props: ProviderProps) {
    * @returns
    */
   const logout = async (remove_token: boolean): Promise<SignOutResponse> => {
-    if (remove_token)
-    {
+    if (remove_token) {
       await removeNotificationToken();
     }
     await save("auth_token", null);
@@ -169,30 +217,54 @@ export function Provider(props: ProviderProps) {
     setAuth(null);
     return { error: undefined, data: "done" }
   };
-  /**
-   *
-   * @param email
-   * @param password
-   * @returns
-   */
-  const login = async (
-    username: string,
-    password: string
-  ): Promise<SignInResponse> => {
+
+  const sendoptsms = async (
+    phone: String
+  ): Promise<OptSMSResponse> => {
     try {
-      const response = await axios.post(BASE_URL + '/auth/sign-in', { username: username, password: password });
+      const response = await axios.post(BASE_URL + '/auth/send-opt-sms', { phone: phone });
+    } catch (e) {
+
+    }
+
+    return {}
+  }
+
+  const refreshToken = async (
+  ): Promise<any> => {
+    if (user) {
+      try {
+        const response = await axios.post(BASE_URL + '/auth/refresh-token', { user_id: user.id });
+        if (response.status === 200) {
+          await save("auth_token", response.data.auth_token.token);
+        } else {
+          await logout(true);
+        }
+      } catch (error: any) {
+        await logout(true);
+      }      
+    }
+  }
+  const login = async (
+    auth_type: String, auth_id: String, passcode?: String
+  ): Promise<LogInResponse> => {
+    try {
+      const response = await axios.post(BASE_URL + '/auth/log-in', { auth_type: auth_type.toLowerCase(), auth_id: auth_id, passcode: passcode });
       if (response.status === 200) {
+        const user = response.data.profile.user;
+        console.log("User", user)
         await save("auth_token", response.data.auth_token.token);
-        setAuth(username);
-        await save("user", username);
+        setAuth(user);
+        await save("user", user);
         await saveNotificationToken();
-        return { data: username, error: undefined };
+        return { data: user, error: undefined };
       } else {
         await save("user", null);
         setAuth(null);
         return { error: "Something went wrong with request", data: undefined };
       }
     } catch (error: any) {
+      console.log(error)
       await save("user", null);
       await save("auth_token", null);
       if (error.response && error.response.status === 401) {
@@ -203,52 +275,43 @@ export function Provider(props: ProviderProps) {
         return { error: "Something went wrong", data: undefined };
       }
     }
-  };
+  }
 
-  const createAcount = async (
-    username: string,
-    password: string,
-    profile_picture: string,
-  ): Promise<SignInResponse> => {
+
+  const editProfile = async (
+    data: EditProfile
+  ): Promise<any> => {
     try {
-      const response = await axios.post(BASE_URL + '/auth/sign-up', {
-        username: username,
-        password: password,
-        profile_picture: profile_picture
+      const response = await axiosInstance.patch('/player/edit', data, {
+        headers: { 'Content-Type': 'application/json' },
       });
+      console.log(response.status)
+      if (response.status == 200) {
+        const user = response.data.user;
+        setAuth(user);
+        await save("user", user);
+      } else {
 
-      if (response.status === 201) {
-        await save("auth_token", response.data.auth_token.token);
-        setAuth(username);
-        await save("user", username);
-        await saveNotificationToken();
-        return { data: username, error: undefined };
-      } else {
-        await save("user", null);
-        Alert.alert("Sign Up Failed", "Something went wrong");
-        return { error: "Something went wrong", data: undefined };
       }
+      // await signOut(false);
     } catch (error: any) {
-      await save("user", null);
-      await save("auth_token", null);
-      if (error.response && error.response.status === 409) {
-        Alert.alert("Sign Up Failed", "Username already taken");
-        return { error: "Username already taken", data: undefined };
-      } else {
-        Alert.alert("Sign Up Failed", "Something went wrong");
-        return { error: "Something went wrong", data: undefined };
-      }
+      console.log(error)
+      Alert.alert("Edit profile failed");
     }
-  };
+
+  }
+
+
 
   useProtectedRoute(user);
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: login,
+        editProfile: editProfile,
+        sendOptSMS: sendoptsms,
+        logIn: login,
         signOut: logout,
-        signUp: createAcount,
         user,
         location,
         authInitialized,

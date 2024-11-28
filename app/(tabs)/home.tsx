@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useState } from 'react';
 import GoingPage from '../../components/GoingPage';
 import PlusButton from '../../components/PlusButton';
@@ -9,7 +9,7 @@ import AuthWall from '../../components/AuthWall';
 import { router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons'
 import { Tab } from 'react-native-elements';
-import { getUserProfile } from '../../components/ProfilePage';
+import { HomeHeader } from '../../components/Header';
 
 export default function Home() {
     const { user } = useAuth();
@@ -18,12 +18,12 @@ export default function Home() {
 
     return (
         <View className='flex-1'>
-            <Stack.Screen
+            {/* <Stack.Screen
                 options={{
                     headerShown: true,
-                    header: () => <Header />
+                    header: () => <HomeHeader />
                 }}
-            />
+            /> */}
             {/* Tab Buttons */}
             <View className='flex flex-row gap-2 p-4'>
                 <TabButton text="Upcoming" tab={tab} setTab={setTab} />
@@ -76,35 +76,3 @@ function TabButton({ text, tab, setTab }: { text: String, tab: String, setTab: (
 
 
 
-const Header = () => {
-    const { user } = useAuth();
-
-    // const { data: data, isLoading: gamesLoading, error: gamesError, refetch } = getUserProfile(user);
-    // console.log(data)
-
-
-    return (
-        <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-300">
-            <View className="flex-row items-center justify-center">
-                {/* <Text className='text-center '>Home</Text> */}
-            </View>
-
-            {user ?
-            <View className="flex-row items-center">
-                <TouchableOpacity className="ml-4" onPress={() => router.push("/notifications")}>
-
-                    <Ionicons name="notifications" size={24} color="rgb(30 58 138)" />
-                </TouchableOpacity>
-            </View>
-            :
-            <View className="flex-row items-center">
-                <TouchableOpacity className="ml-4" onPress={() => router.push("/notifications")}>
-
-                    <Ionicons name="notifications" size={24} color="rgb(30 58 138)" />
-                </TouchableOpacity>
-            </View>
-            }
-
-        </View>
-    );
-};

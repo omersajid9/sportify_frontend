@@ -6,6 +6,7 @@ import { useAuth } from '../context/auth';
 import SportIcon from '../../components/SportIcon';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from '../../services/api';
+import Loader from '../../components/Loader';
 
 const getSession = (id: String, location: {lat: number, lng: number}) => {
   return useQuery({
@@ -63,12 +64,18 @@ export default function joinSession() {
   var { data: usernames, isLoading: usernamesLoading, error: usernamesError } = getUsernames(sessionId, session != undefined);
   const otherUsernames: string[] = usernames?.map((u: any) => u.username).filter((u: any) => u != session?.username);
 
+
   const handleSubmit = async (rsvp: String) => {
+    if (!user) {
+      return;
+    }
     const data = {
       session_id: sessionId,
-      player_username: user,
+      player_user_id: user.id,
       player_rsvp: rsvp
     }
+
+    console.log('data', data)
 
     try {
       const response = await axiosInstance.post('/session/rsvp', data, {
@@ -84,7 +91,7 @@ export default function joinSession() {
   }
 
   if (sessionLoading || usernamesLoading) {
-    return <Text>Loading...</Text>;
+    return <Loader />;
   }
 
   if (sessionError) {
@@ -139,7 +146,7 @@ export default function joinSession() {
         ))}
       </View>
 
-      {user && session?.username != user && otherUsernames.includes(user) == false &&
+      {user && session?.username != user.username && otherUsernames.includes(user.username) == false &&
         <View className='flex-row justify-around my-2'>
           <TouchableOpacity onPress={() => handleSubmit("No")}>
             {/* <View className=' bg-red-300 py-2 px-4 rounded-lg'><Text>Reject</Text></View> */}

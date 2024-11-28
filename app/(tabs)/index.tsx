@@ -1,10 +1,14 @@
 import React from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ExplorePage from '../../components/ExplorePage';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import PlusButton from '../../components/PlusButton';
 import GoingPage from '../../components/GoingPage';
 import CommunityPage from '../../components/community';
+import { useAuth } from '../context/auth';
+import { router, Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons'
+import { HomeHeader } from '../../components/Header';
 
 // import { NavigationContainer } from '@react-navigation/native';
 
@@ -13,6 +17,13 @@ import CommunityPage from '../../components/community';
 export default function MyTabs() {
   return (
     <View className='flex-1'>
+      {/* <Stack.Screen
+        options={{
+          headerShown: true,
+          header: () => <HomeHeader />
+        }}
+      /> */}
+
       <ExplorePage />
       {/* <Tab.Navigator
         screenOptions={{
@@ -38,7 +49,7 @@ export default function MyTabs() {
           component={GoingPage}/>
       </Tab.Navigator> */}
       {/* <PlusButton /> */}
-      
+
     </View>
   );
 }

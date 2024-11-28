@@ -6,11 +6,12 @@ import { FlashList } from '@shopify/flash-list';
 import axiosInstance from '../services/api';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import AuthWall from '../components/AuthWall';
+import Loader from '../components/Loader';
 
-const fetchNotifications = (user: string | null) => {
+const fetchNotifications = (user_id: string | undefined) => {
   return useQuery({
-    queryKey: ['players', user], queryFn: async () => {
-      const response = await axiosInstance.get('/notification/get', { params: { username: user } });
+    queryKey: ['notifications', user_id], queryFn: async () => {
+      const response = await axiosInstance.get('/notification/get', { params: { user_id: user_id } });
       return response.data.data.notifications;
     },
     enabled: true
@@ -20,7 +21,7 @@ const fetchNotifications = (user: string | null) => {
 export default function Notifications() {
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
-  const { data: notifications, isLoading, refetch } = fetchNotifications(user);
+  const { data: notifications, isLoading, refetch } = fetchNotifications(user?.id);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -33,7 +34,7 @@ export default function Notifications() {
 }
 
   return (
-    <View className='h-full p-4'>
+    <View className='h-full p-4 '>
       <FlashList
         className='h-full'
         data={notifications}
@@ -52,7 +53,7 @@ export default function Notifications() {
         }
         ListEmptyComponent={
           isLoading ? (
-            <Text className="text-center mt-4 text-gray-500">Loading...</Text>
+            <Loader />
           ) : (
             <Text className="text-center mt-4 text-gray-500">No notifications found</Text>
           )

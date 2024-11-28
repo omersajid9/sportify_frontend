@@ -21,6 +21,12 @@ import axiosInstance from '../services/api';
 import Loader from '../components/Loader';
 import ErrorBanner from '../components/ErrorBanner';
 
+
+import Entypo from '@expo/vector-icons/Entypo';
+import Octicons from '@expo/vector-icons/Octicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { FontAwesome6 } from '@expo/vector-icons';
+
 const useSports = () => {
     return useQuery({
         queryKey: ['sports', 'all'], queryFn: async () => {
@@ -43,7 +49,6 @@ export default function CreateSession() {
     const Location = location ? location : { lat: 40, lng: -74 };
 
 
-    const [sessionName, setSessionName] = useState('');
     const [locationName, setLocationName] = useState('');
 
     const [dateTime, setDateTime] = useState(new Date());
@@ -55,6 +60,20 @@ export default function CreateSession() {
         const minutes = date.getMinutes();
         return { hours, minutes };
     };
+
+    function getTimeOfDay(date: Date) {
+        const hour = date.getHours();
+
+        if (hour >= 5 && hour < 12) {
+            return "Morning";
+        } else if (hour >= 12 && hour < 17) {
+            return "Afternoon";
+        } else if (hour >= 17 && hour < 21) {
+            return "Evening";
+        } else {
+            return "Night";
+        }
+    }
 
 
     const [date, setDate] = useState(new Date());
@@ -203,10 +222,7 @@ export default function CreateSession() {
     };
 
     const handleSubmit = async () => {
-        if (!sessionName) {
-            alert("Please enter a session name");
-            return;
-        }
+        var sessionName = getTimeOfDay(time) + '' + sports.filter((s: any) => s.key == selectedSport)[0]?.name;
         if (selectedSport == "Select a sport" || !selectedSport) {
             alert("Please select a sport");
             return;
@@ -229,7 +245,7 @@ export default function CreateSession() {
             session_name: sessionName,
             lat: region.latitude,
             lng: region.longitude,
-            username: user,
+            user_id: user?.id,
             start_time: timeString.substring(0, timeString.length - 1),
             end_time: endtimestring.substring(0, endtimestring.length - 1),
             sport: selectedSport,
@@ -259,6 +275,7 @@ export default function CreateSession() {
     }
 
     function onSportsPres() {
+        Keyboard.dismiss()
         if (Platform.OS == 'ios') {
             sportRef.current?.show();
         } else {
@@ -276,41 +293,38 @@ export default function CreateSession() {
 
     const formatDate = (date: Date): string => {
         const options: Intl.DateTimeFormatOptions = {
-          weekday: 'short', // "Wed"
-          month: 'short',   // "Nov"
-          day: 'numeric',   // "6"
-          hour: 'numeric',  // "1"
-          minute: '2-digit', // "55"
-          hour12: true,     // 12-hour format
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
         };
-    
+
         return date.toLocaleString('en-US', options);
-      };
-    
+    };
+
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View className='flex-1 p-6 bg-[#EAEAEA]'>
                 <GestureHandlerRootView>
-                    <View className=''>
-                        <Text className='text-lg mb-2 font-bold'>Session Name</Text>
-                        <TextInput className='border-2 border-blue-900 p-3 mb-4 rounded-lg' value={sessionName} onChangeText={setSessionName} placeholderTextColor={"black"} placeholder='Enter session name...' />
-                    </View>
-                    
-                    <View className='mb-6 flex-row py-2 justify-between'>
-                        <Text className='text-lg font-bold py-1'>Sport</Text>
+                    <View className=' flex-row py-2 px-2 justify-between'>
                         <TouchableOpacity
-                            className="border-blue-900 border-2 px-4 py-1 rounded-lg justify-center items-center text-center"
+                            className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
                             onPress={onSportsPres}
                         >
-                            <Text className='text-lg text-center'>{sports.filter((s: any) => s.key == selectedSport)[0]?.name || "Select a sport"}</Text>
+                            <Text className='text-lg'>{sports.filter((s: any) => s.key == selectedSport)[0]?.name || "Select Sport Type"}</Text>
+                            <Entypo name="chevron-down" size={24} color="black" />
+
                         </TouchableOpacity>
 
                     </View>
 
                     {Platform.OS == 'ios' ?
-                        <ActionSheet ref={sportRef} containerStyle={{ height: 300, backgroundColor: 'white' }}>
+                        <ActionSheet ref={sportRef} containerStyle={{ height: 300, }}>
                             <Picker
+                                itemStyle={{ color: "black" }}
                                 selectedValue={selectedSport}
                                 onValueChange={(itemValue: any) =>
                                     setSelectedSport(itemValue)
@@ -337,14 +351,16 @@ export default function CreateSession() {
 
                     }
 
-                    <View className=' overflow-auto'>
-                        <Text className='text-lg mb-2 font-bold'>Location</Text>
-                        <View className=' flex-row' >
+                    <View className=' flex-row py-2 px-2 justify-between'>
+                        <View
+                            className="flex flex-row justify-between items-center border-blue-900 border-2 pr-4 py-2 rounded-lg w-full gap-2"
+                        >
                             <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
+                            <Pressable onPress={() => mapActionSheetRef.current?.show()}><FontAwesome6 name="map" size={24} color="black" /></Pressable>
                         </View>
                     </View>
                     {predictions.length > 0 &&
-                        <View className=" flex-1 mx-2 rounded-lg z-50  bg-[#EAEAEA]" >
+                        <View className=" flex-1 mx-2 rounded-lg  bg-[#EAEAEA]" >
                             <FlashList
                                 estimatedItemSize={20}
                                 data={predictions}
@@ -361,11 +377,11 @@ export default function CreateSession() {
                         </View>
                     }
 
-                    <View className=' mt-3 justify-center items-center'>
+                    {/* <View className=' mt-3 justify-center items-center'>
                         <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={() => mapActionSheetRef.current?.show()}>
                             <Text className=' text-white font-bold' >Pin on Map</Text>
                         </Pressable>
-                    </View>
+                    </View> */}
 
                     <ActionSheet
                         ref={mapActionSheetRef}
@@ -394,10 +410,12 @@ export default function CreateSession() {
                     {Platform.OS == 'ios'
                         ?
                         <View>
-                            <View className=' my-6 flex-row py-2 justify-between'>
-                                <Text className='text-lg font-bold py-1'>Time</Text>
-                                <Pressable className=' border-blue-900 border-2 px-4 py-1 rounded-lg justify-center items-center text-center' onPress={() => dateTimeActionSheetRef.current?.show()}>
+                            <View className='  flex-row py-2 px-2 justify-between'>
+                                <Pressable
+                                    className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+                                    onPress={() => dateTimeActionSheetRef.current?.show()}>
                                     <Text className='text-lg text-center'>{formatDate(dateTime)}</Text>
+                                    <Octicons name="calendar" size={24} color="black" />
                                 </Pressable>
                             </View>
                             <ActionSheet
@@ -417,15 +435,16 @@ export default function CreateSession() {
                                     value={dateTime}
                                     mode="datetime"
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                    minuteInterval={10}
+                                    minuteInterval={5}
                                     onChange={onChangeDateTimePicker}
                                 />
                             </ActionSheet>
-                            <View className=' mb-6 flex-row py-2 justify-between'>
-                                <Text className='text-lg font-bold py-1'>Duration</Text>
-                                <Pressable className=' border-blue-900 border-2 px-4 py-1 rounded-lg justify-center items-center text-center' onPress={() => durationTimeActionSheetRef.current?.show()}>
+                            <View className='  flex-row py-2 px-2 justify-between'>
+                                <Pressable
+                                    className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+                                    onPress={() => durationTimeActionSheetRef.current?.show()}>
                                     <Text className='text-lg text-center'>{extractDurationTime(durationTime)['hours']} hrs {extractDurationTime(durationTime)['minutes']} mins</Text>
-                                    {/* <Text className=' text-white font-bold' >Pick duration</Text> */}
+                                    <MaterialCommunityIcons name="timer-settings-outline" size={24} color="black" />
                                 </Pressable>
                             </View>
                             <ActionSheet
@@ -444,7 +463,7 @@ export default function CreateSession() {
                                     testID="dateTimePicker"
                                     value={durationTime}
                                     mode="countdown"
-                                    minuteInterval={10}
+                                    minuteInterval={1}
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                     onChange={onChangeDurationTimePicker}
                                 />
@@ -453,7 +472,7 @@ export default function CreateSession() {
                         </View>
                         :
                         <View className='my-2 flex-row justify-between'>
-                            <View className='mb-6 w-1/2 p-2'>
+                            <View className=' w-1/2 p-2'>
                                 <Text className='text-lg mb-2 font-bold'>Date</Text>
                                 <View className='justify-center items-center'>
                                     <Text className='text-lg mb-2'>{date.toDateString()}</Text>
@@ -463,7 +482,7 @@ export default function CreateSession() {
                                 </View>
 
                             </View>
-                            <View className='mb-6 w-1/2 p-2'>
+                            <View className=' w-1/2 p-2'>
                                 <Text className='text-lg mb-2 font-bold'>Time</Text>
                                 <View className='justify-center items-center'>
                                     <Text className='text-lg mb-2'>{time.toLocaleTimeString()}</Text>
@@ -476,20 +495,20 @@ export default function CreateSession() {
                         </View>
                     }
 
-                    <View className='mb-6 flex-row py-2 justify-between'>
-                        <Text className='text-lg font-bold py-1'>Max Players</Text>
-
+                    <View className='  flex-row py-2 px-2 justify-between'>
                         <TouchableOpacity
-                            className="border-blue-900 border-2 px-4 py-1 rounded-lg justify-center items-center text-center"
+                            className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
                             onPress={onMaxPlayersPress}
                         >
                             <Text className='text-lg text-center'>{maxPlayers}</Text>
+                            <Octicons name="people" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
 
                     {Platform.OS == 'ios' ?
                         <ActionSheet ref={maxPlayersRef} containerStyle={{ height: 300, backgroundColor: 'white' }}>
                             <Picker
+                                itemStyle={{ color: "black" }}
                                 selectedValue={maxPlayers}
                                 onValueChange={(itemValue: any) =>
                                     setMaxPlayers(itemValue)
@@ -514,7 +533,7 @@ export default function CreateSession() {
 
                     }
 
-                    {/* <View className='flex-row justify-between items-center mb-6'>
+                    {/* <View className='flex-row justify-between items-center '>
                     <Text className='text-lg font-bold my-auto'>Public</Text>
                     <Switch
                         trackColor={{ false: '#767577', true: '#81b0ff' }}
@@ -524,7 +543,7 @@ export default function CreateSession() {
                     />
                 </View> */}
 
-                    <View className='mb-6 justify-center items-center'>
+                    <View className=' justify-center items-center'>
                         <Pressable className=' p-4 bg-blue-900 rounded-lg w-min' onPress={handleSubmit}>
                             <Text className=' text-white font-bold w-min' >Submit</Text>
                         </Pressable>

@@ -23,9 +23,12 @@ export default function GameView({gameData, explore}: GameViewProps) {
   var session = gameData.item;
 
   const handleSubmit = async (rsvp: String) => {
+    if (!user) {
+      return;
+    }
     const data = {
       session_id: session.id,
-      player_username: user,
+      player_user_id: user.id,
       player_rsvp: rsvp
     }
     try {
@@ -41,16 +44,10 @@ export default function GameView({gameData, explore}: GameViewProps) {
   }
 
   const handleSwipeRight = () => {
-    // flRef?.current.setNativeProps({
-    //   style: { display: 'none' }
-    // });
     handleSubmit("No")
   };
 
   const handleSwipeLeft = () => {
-    // flRef?.current.setNativeProps({
-    //   style: { display: 'none' }
-    // });
     handleSubmit("Yes")
   };
 

@@ -11,10 +11,10 @@ import Loader from "./Loader";
 import ErrorBanner from "./ErrorBanner";
 import AuthWall from "./AuthWall";
 
-const getUpcomingGames = (user: string | null, location: { lat: number, lng: number }) => {
+const getPastSessions = (user_id: string | undefined, location: { lat: number, lng: number }) => {
     return useQuery({
-        queryKey: ['sessions', 'past', 'user'], queryFn: async () => {
-            const response = await axiosInstance.get('/search/past_sessions', { params: { username: user, lat: location.lat, lng: location.lng } });
+        queryKey: ['sessions', 'past', user_id], queryFn: async () => {
+            const response = await axiosInstance.get('/search/past_sessions', { params: { user_id: user_id, lat: location.lat, lng: location.lng } });
             return response.data.data.sessions;
         }
     })
@@ -24,7 +24,7 @@ export default function PastPage() {
     const { user, location } = useAuth();
     const Location = location ? location : { lat: 40, lng: -74 };
 
-    var { data: sessions, isLoading, error, refetch } = getUpcomingGames(user, Location);
+    var { data: sessions, isLoading, error, refetch } = getPastSessions(user?.id, Location);
 
     const [refreshing, setRefreshing] = useState(false);
 
