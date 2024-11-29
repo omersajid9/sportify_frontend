@@ -7,6 +7,7 @@ import SportIcon from '../../components/SportIcon';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from '../../services/api';
 import Loader from '../../components/Loader';
+import AuthWall from '../../components/AuthWall';
 
 const getSession = (id: String, location: {lat: number, lng: number}) => {
   return useQuery({
@@ -139,12 +140,14 @@ export default function joinSession() {
       </View>
 
 
-      <View className=' mx-2 rounded-lg'>
-        <Text className=' text-lg font-bold text-gray-800'>RSVPS</Text>
-        {otherUsernames.map((username: string) => (
-          <Text key={username} className=' text-black p-2'>{username}</Text>
-        ))}
-      </View>
+      {otherUsernames.length > 0 &&
+        <View className=' mx-2 rounded-lg'>
+          <Text className=' text-lg font-bold text-gray-800'>RSVPS</Text>
+          {otherUsernames.map((username: string) => (
+            <Text key={username} className=' text-black p-2'>{username}</Text>
+          ))}
+        </View>      
+      }
 
       {user && session?.username != user.username && otherUsernames.includes(user.username) == false &&
         <View className='flex-row justify-around my-2'>
@@ -156,6 +159,9 @@ export default function joinSession() {
             <View className=' bg-green-300 py-2 px-4 rounded-lg'><Text>Accept</Text></View>
           </TouchableOpacity>
         </View>
+      }
+      {!user &&
+        <AuthWall />
       }
 
 

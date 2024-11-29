@@ -107,9 +107,14 @@ export function Provider(props: ProviderProps) {
         // console.log("YAYYY")
         await refreshToken(); // Call logout when the event is emitted
       };
+      const handleLogout = async () => {
+        // console.log("YAYYY")
+        await logout(true); // Call logout when the event is emitted
+      };
       // router.replace('/onboarding');
 
   
+      eventEmitter.on('log-out', handleLogout);
       eventEmitter.on('refresh-token', handleRefershToken);
       return () => {
         eventEmitter.off('refresh-token', handleRefershToken);

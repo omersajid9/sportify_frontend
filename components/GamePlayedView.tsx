@@ -51,13 +51,21 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
 
   const renderUserProfilePictures = (players: Player[], side: string) =>
     players.map((player, index) => (
-      <Image
-        key={player.id}
-        source={{ uri: player.profile_picture }}
-        className={`rounded-full border-2 border-blue-900 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-6 h-6 '}`}
-        accessible
-        accessibilityLabel={`Profile picture of ${player.username}`}
-      />
+      <View
+      key={player.id}
+      className={`rounded-full  absolute  bg-white`}
+      style={{right: 40 * index}}
+      >
+          <Image
+            key={player.id}
+            source={{ uri: player.profile_picture }}
+            className='flex-1 border-2 border-blue-900 rounded-full w-14 h-14 m-1'
+            // style={{right: 40 * index}}
+            // className={`rounded-full border-2 border-blue-900 absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
+            accessible
+            accessibilityLabel={`Profile picture of ${player.username}`}
+          />
+      </View>
     ));
 
   const renderScores = () => (
@@ -93,10 +101,10 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
         onPress={() => router.push(`/game/${game.id}`)}
         className="rounded-lg"
       >
-        <View className="flex-row justify-between items-center">
-          <View className="flex-row flex-wrap gap-2 w-1/3 ">{renderUserProfilePictures(game.team_1_users.slice(0, 3), 'left')}</View>
-          <View className="items-center w-1/3">{renderScores()}</View>
-          <View className="flex-row flex-wrap gap-2 w-1/3 justify-end ">{renderUserProfilePictures(game.team_2_users.slice(0, 3), 'right')}</View>
+        <View className="flex-row justify-between items-center border-2">
+          <View className="flex-row flex-wrap w-1/3  border-2 h-full">{renderUserProfilePictures(game.team_1_users.slice(0, 4), 'left')}</View>
+          <View className="items-center w-1/3 py-10">{renderScores()}</View>
+          <View className="flex-row flex-wrap w-1/3  border-2 h-full">{renderUserProfilePictures(game.team_2_users.slice(0, 4), 'right')}</View>
         </View>
       </TouchableOpacity>
 

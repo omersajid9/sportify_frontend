@@ -28,11 +28,17 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     console.log(error.response.status)
-    console.log(error.response.statusText)
+    console.log("E", error.response.statusText)
     if (error.response?.status === 401) {
-      eventEmitter.emit('refresh-token');
-      const originalRequest = error.config;
-      return axiosInstance(originalRequest);
+      // if (error.response?.statusText == undefined) {
+      //   eventEmitter.emit('log-out');
+      //   console.log("LOGGING")
+      // } else {
+        console.log("REFRESHING")
+        eventEmitter.emit('refresh-token');
+        const originalRequest = error.config;
+        return axiosInstance(originalRequest);
+      // }
     }
     console.log("HEHERE")
   }
