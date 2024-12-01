@@ -15,6 +15,7 @@ import { reverseGeocodeAsync } from 'expo-location';
 import axiosInstance from '../services/api';
 import Loader from './Loader';
 import ErrorBanner from './ErrorBanner';
+import { MotiView } from 'moti';
 
 function formatDate(date: Date) {
     if (isNaN(date.getTime())) {
@@ -150,7 +151,7 @@ export default function ExplorePage() {
 
 
     return (
-        <View className=" h-full">
+        <View className=" flex-1 h-full">
             <SportDateSelector
                 selectedSport={selectedSport}
                 setSelectedSport={setSelectedSport}
@@ -161,26 +162,58 @@ export default function ExplorePage() {
 
 
             <View className='flex-row justify-between my-2'>
-                <View className='flex-1 border-2 border-blue-900 rounded-lg mx-4' >
+                <View className='flex-1 bg-[#e0e0e0] shadow-sm rounded-lg mx-4 align-middle' >
                     <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                 </View>
-                    <View className="flex-row gap-1 items-center justify-center mr-2">
-                        <TouchableOpacity
-                            className={`px-4 py-2 rounded-lg border-2 ${view === 'list' ? 'bg-blue-100 border-blue-900' : 'bg-neutral-100 border-neutral-200'
-                                }`}
-                            onPress={() => setView('list')}
+                <View className="flex-row gap-1 items-center justify-center mr-2">
+                    <TouchableOpacity
+                        onPress={() => setView('list')}
+                    >
+                        <MotiView
+                            style={{
+                                backgroundColor: view === 'list' ? '#222222' : '#e0e0e0', // Light gray
+                                margin: 5
+                            }}
+                            animate={{
+                                scale: view === 'list' ? 1.1 : 1,
+                                opacity: view === 'list' ? 1 : 0.6,
+                            }}
+                            transition={{
+                                type: 'spring',
+                                damping: 15,
+                                stiffness: 500,
+                            }}
+                            className="px-4 py-2 rounded-lg"
                         >
-                            <Text className={`font-semibold ${view === 'list' ? 'text-blue-900' : 'text-black'}`}>List</Text>
-                        </TouchableOpacity>
+                            <Text className={`font-semibold ${view === 'list' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>List</Text>
+                        </MotiView>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity
-                            className={`px-4 py-2 rounded-lg border-2 ${view === 'map' ? 'bg-blue-100 border-blue-900' : 'bg-neutral-100 border-neutral-200'
-                                }`}
-                            onPress={() => setView('map')}
+                    <TouchableOpacity
+                        // className={`px-4 py-2 rounded-lg border-2 ${view === 'map' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
+                        //     }`}
+                        onPress={() => setView('map')}
+                    >
+                        <MotiView
+                            style={{
+                                backgroundColor: view === 'map' ? '#222222' : '#e0e0e0', // Light gray
+                                margin: 5
+                            }}
+                            animate={{
+                                scale: view === 'map' ? 1.1 : 1,
+                                opacity: view === 'map' ? 1 : 0.6,
+                            }}
+                            transition={{
+                                type: 'spring',
+                                damping: 15,
+                                stiffness: 500,
+                            }}
+                            className="px-4 py-2 rounded-lg"
                         >
-                            <Text className={`font-semibold ${view === 'map' ? 'text-blue-900' : 'text-black'}`}>Map</Text>
-                        </TouchableOpacity>
-                    </View>
+                            <Text className={`font-semibold ${view === 'map' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>Map</Text>
+                        </MotiView>
+                    </TouchableOpacity>
+                </View>
             </View>
 
 

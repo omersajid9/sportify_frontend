@@ -14,7 +14,7 @@ export default function ErrorBanner({ message, refetch }: ErrorProps) {
             </Text>
             <TouchableOpacity
                 onPress={() => refetch()}
-                className="mt-4 px-4 py-2 bg-blue-900 rounded-full"
+                className="mt-4 px-4 py-2 bg-[#222222] rounded-full"
             >
                 <Text className="text-white font-medium">Reload</Text>
             </TouchableOpacity>

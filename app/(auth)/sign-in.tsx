@@ -22,7 +22,7 @@ export default function SignIn() {
       {/* <Stack.Screen options={{ title: "Sign In", headerShown: true }} /> */}
       <View className=" justify-center items-center">
         <View className="mb-4 w-3/4">
-          <Text className="text-lg mb-2 text-blue-900">Username</Text>
+          <Text className="text-lg mb-2 text-[#222222]">Username</Text>
           <TextInput
             placeholderTextColor={'grey'}
             placeholder="username"
@@ -31,11 +31,11 @@ export default function SignIn() {
             onChangeText={(text) => {
               usernameRef.current = text;
             }}
-            className="border border-blue-900 rounded px-2 py-1 mb-4"
+            className="border border-[#222222] rounded px-2 py-1 mb-4"
           />
         </View>
         <View className="mb-4 w-3/4">
-          <Text className="text-lg mb-2 text-blue-900">Password</Text>
+          <Text className="text-lg mb-2 text-[#222222]">Password</Text>
           <TextInput
             placeholderTextColor={'grey'}
             placeholder="password"
@@ -44,11 +44,11 @@ export default function SignIn() {
             onChangeText={(text) => {
               passwordRef.current = text;
             }}
-            className="border border-blue-900 rounded px-2 py-1 mb-4"
+            className="border border-[#222222] rounded px-2 py-1 mb-4"
           />
         </View>
         <View className=' mt-3 justify-center items-center'>
-          <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={async () => {
+          <Pressable className=' p-4 bg-[#222222] rounded-lg' onPress={async () => {
             const { data, error } = await signIn(
               usernameRef.current,
               passwordRef.current

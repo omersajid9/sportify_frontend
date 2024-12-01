@@ -48,7 +48,7 @@ export default function CommunityPage() {
         placeholder="Search users"
         value={query}
         onChangeText={updateSearch}
-        searchIcon={<FontAwesome name="search" size={18} color="rgb(30 58 138)" />}
+        searchIcon={<FontAwesome name="search" size={18} color="rgb(34 34 34)" />}
         clearIcon={false}
         inputContainerStyle={styles.inputContainer}
         containerStyle={styles.searchBarContainer}
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: 40,
     paddingHorizontal: 5,
-    borderColor: 'rgb(30 58 138)',
+    borderColor: 'rgb(34 34 34)',
     borderWidth: 2,
     borderBottomWidth: 2
   },

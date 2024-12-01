@@ -14,7 +14,7 @@ export default function AuthPage() {
             <View className='flex'>
                 <View className='flex flex-row justify-evenly px-10'>
                     <Pressable
-                        className={`flex-1 ${!signinpage ? 'bg-blue-900 border-blue-500' : 'bg-gray-200 border-gray-300'}`}
+                        className={`flex-1 ${!signinpage ? 'bg-[#222222] border-blue-500' : 'bg-gray-200 border-gray-300'}`}
                         onPress={() => setSigninpage(false)}
                     >
                         <Text
@@ -25,7 +25,7 @@ export default function AuthPage() {
                     </Pressable>
 
                     <Pressable
-                        className={`flex-1 ${signinpage ? 'bg-blue-900 border-blue-500' : 'bg-gray-200 border-gray-300'}`}
+                        className={`flex-1 ${signinpage ? 'bg-[#222222] border-blue-500' : 'bg-gray-200 border-gray-300'}`}
                         onPress={() => setSigninpage(true)}
                     >
                         <Text

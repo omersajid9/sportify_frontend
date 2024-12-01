@@ -27,7 +27,7 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
       <View className="rounded-lg mx-4 overflow-hidden">
         <TouchableOpacity
           onPress={() => setIsExpanded(!isExpanded)}
-          className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+          className="flex flex-row justify-between items-center border-[#222222] border-2 px-4 py-3 rounded-lg w-full"
         >
           <Text className="text-gray-600 text-sm">{placeholder}</Text>
           <MaterialIcons
@@ -69,7 +69,7 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
         {selectedPlayers?.map((member: UserDetails, index: number) => (
           <View
             key={index}
-            className="bg-blue-100 px-3 py-1 mx-1 my-1 rounded-full flex-row items-center"
+            className="bg-transparent px-3 py-1 mx-1 my-1 rounded-full flex-row items-center"
           >
             <Text className="text-blue-800 text-sm mr-1">{member.username}</Text>
             <TouchableOpacity onPress={() => toggleMember(member)} className="ml-1">

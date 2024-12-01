@@ -14,9 +14,9 @@ export default function PlusButton() {
   return (
     <View className="absolute bottom-20 left-1/2 -translate-x-1/2 items-center justify-end pb-4">
       <TouchableOpacity
-        className="w-16 h-16 rounded-full bg-blue-100 border-blue-900 border-[3px] items-center justify-center "
+        className="w-16 h-16 rounded-full bg-[#e0edd4] border-[#222222] border-[3px] items-center justify-center "
         onPress={() => setModalVisible(true)}>
-        <Octicons name="plus" size={24} color="rgb(30 58 138)" />
+        <Octicons name="plus" size={24} color="rgb(34 34 34)" />
       </TouchableOpacity>
 
       <Modal
@@ -38,12 +38,12 @@ export default function PlusButton() {
                     exit={{ opacity: 0, translateY: 20 }}
                     transition={{ type: 'timing', duration: 300 }}>
                     <TouchableOpacity
-                      className="bg-blue-100 border-blue-900 border-2 px-6 py-4 rounded-full mb-2"
+                      className="bg-transparent border-[#222222] border-2 px-6 py-4 rounded-full mb-2"
                       onPress={() => {
                         setModalVisible(false);
                         router.push('/createSession');
                       }}>
-                      <Text className="text-blue-900 font-bold text-center">Create Session</Text>
+                      <Text className="text-[#222222] font-bold text-center">Create Session</Text>
                     </TouchableOpacity>
                   </MotiView>
 
@@ -53,12 +53,12 @@ export default function PlusButton() {
                     exit={{ opacity: 0, translateY: 20 }}
                     transition={{ type: 'timing', duration: 300, delay: 150 }}>
                     <TouchableOpacity
-                      className="bg-blue-100 border-blue-900 border-2 px-6 py-4 rounded-full mb-2"
+                      className="bg-transparent border-[#222222] border-2 px-6 py-4 rounded-full mb-2"
                       onPress={() => {
                         setModalVisible(false);
                         router.push('/reportScore');
                       }}>
-                      <Text className="text-blue-900 font-bold text-center">Report Score</Text>
+                      <Text className="text-[#222222] font-bold text-center">Report Score</Text>
                     </TouchableOpacity>
                   </MotiView>
                 </>

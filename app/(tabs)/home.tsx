@@ -25,7 +25,7 @@ export default function Home() {
                 }}
             /> */}
             {/* Tab Buttons */}
-            <View className='flex flex-row gap-2 p-4'>
+            <View className='flex flex-row gap-4 p-4 px-8'>
                 <TabButton text="Upcoming" tab={tab} setTab={setTab} />
                 <TabButton text="Past" tab={tab} setTab={setTab} />
             </View>
@@ -68,8 +68,24 @@ export default function Home() {
 
 function TabButton({ text, tab, setTab }: { text: String, tab: String, setTab: (text: string) => void }) {
     return (
-        <TouchableOpacity onPress={() => setTab(text.toString())} className={` px-4 py-3 border-2 rounded-lg ${text == tab ? 'bg-blue-100 border-blue-900' : 'bg-neutral-100 border-neutral-200'}`}>
-            <Text>{text}</Text>
+        <TouchableOpacity onPress={() => setTab(text.toString())} >
+            <MotiView
+                style={{
+                    backgroundColor: text === tab ? '#222222' : '#e0e0e0', // Light gray
+                }}
+                animate={{
+                    scale: text === tab ? 1.2 : 1,
+                    opacity: text === tab ? 1 : 0.6,
+                }}
+                transition={{
+                    type: 'spring',
+                    damping: 15,
+                    stiffness: 150,
+                }}
+                className="flex items-center justify-center  px-3 rounded-lg py-2 shadow-sm w-28"
+            >
+                <Text className={` ${text === tab ? ' text-[#F2F2F2]': ' text-[#222222'}`}>{text}</Text>
+            </MotiView>
         </TouchableOpacity>
     )
 }

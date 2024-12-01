@@ -46,7 +46,7 @@ const UpdateProfile = () => {
 return (
     <View className="justify-center items-center my-4">
         <View className="mb-4 w-3/4">
-            <Text className="text-lg mb-2 text-blue-900">Username</Text>
+            <Text className="text-lg mb-2 text-[#222222]">Username</Text>
             <TextInput
                 placeholderTextColor={'grey'}
                 placeholder="Update Username"
@@ -54,24 +54,24 @@ return (
                 nativeID="userName"
                 value={username}
                 onChangeText={setUsername}
-                className="w-full py-3 border-2 border-blue-900 rounded-lg px-4 "
+                className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
                 />
         </View>
 
         <View className="mb-4 w-3/4">
-            <Text className="text-lg mb-2 text-blue-900">Password (Optional)</Text>
+            <Text className="text-lg mb-2 text-[#222222]">Password (Optional)</Text>
             <TextInput
                 placeholderTextColor={'grey'}
                 placeholder="Update Password"
                 secureTextEntry={true}
                 nativeID="password"
                 onChangeText={setPassword}
-                className="w-full py-3 border-2 border-blue-900 rounded-lg px-4 "
+                className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
                 />
         </View>
 
         <View className="mb-4 w-3/4">
-            <Text className="text-lg mb-2 text-blue-900">Profile Picture</Text>
+            <Text className="text-lg mb-2 text-[#222222]">Profile Picture</Text>
             <FlashList
                 estimatedItemSize={50}
                 data={avatars}
@@ -113,7 +113,7 @@ return (
 
         <View className="mt-3 justify-center items-center">
             <Pressable
-                className="p-4 bg-blue-900 rounded-lg"
+                className="p-4 bg-[#222222] rounded-lg"
                 onPress={handleUpdate}
             >
                 <Text className="text-white font-bold">Update Profile</Text>

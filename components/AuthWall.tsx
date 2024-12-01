@@ -31,10 +31,10 @@ export default function AuthWall() {
                 </Text>
             </Pressable> */}
             <Pressable className='py-1 h-12 flex flex-row items-center justify-center gap-2' onPress={() => SheetManager.show("authsheet")}>
-                <Text className=' text-blue-900 font-bold text-lg'>
+                <Text className=' text-[#222222] font-bold text-lg'>
                     Login
                 </Text>
-                <Feather name="log-in" size={30} color="rgb(30 58 138)" />
+                <Feather name="log-in" size={30} color="rgb(34 34 34)" />
             </Pressable>
 
 

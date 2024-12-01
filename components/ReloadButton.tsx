@@ -7,13 +7,14 @@ import { router } from 'expo-router';
 export default function ReloadButton(reload: any) {
 
   return (
-    <View className="absolute bottom-0 right-3 items-center justify-end pb-4 z-50">
+    <View className="absolute left-1/2 bottom-2 -translate-x-1/2 right-3 items-center justify-end pb-4 z-50">
       {/* Circular Button */}
       <TouchableOpacity
-        className="w-16 h-16 rounded-full bg-[#EAEAEA] items-center justify-center shadow-lg"
+        className="px-4 py-2 rounded-2xl bg-[#EAEAEA] items-center justify-center shadow-lg"
         onPress={reload.reload}
       >
-        <MaterialCommunityIcons name="reload" size={24} color="rgb(30 58 138)" />
+        <Text className=' text-lg font-semibold'>Search here</Text>
+        {/* <MaterialCommunityIcons name="reload" size={24} color="rgb(34 34 34)" /> */}
       </TouchableOpacity>
 
     </View>

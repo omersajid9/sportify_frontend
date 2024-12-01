@@ -49,10 +49,9 @@ function RootLayoutNav() {
 
     console.log(segments)
     function TabHeader() {
-
         if (showProfileHeader) {
             return (
-<ProfileHeader />
+                <ProfileHeader />
             )
         } else {
             return (
@@ -75,12 +74,13 @@ function RootLayoutNav() {
                             name="(tabs)"
                             options={{
                                 title: "",
-                                // headerShown: false,
-                                headerRight: () => <TabHeader />,
-                                // headerTransparent: true,
-                                // headerBackground: 'transparent'
-                                headerStyle: { backgroundColor: '#F2F2F2' },
-                                headerShadowVisible: false
+                                headerShown: false,
+                                // headerRight: () => <TabHeader />,
+                                // // headerTransparent: true,
+                                // // headerBackground: 'transparent'
+                                // headerStyle: { backgroundColor: '#F2F2F2' },
+                                // headerShadowVisible: false,
+                                // headerTintColor: '#222222',
 
                                 // header: () => <Header />
                             }}
@@ -92,15 +92,15 @@ function RootLayoutNav() {
                                 headerShown: false,
                             }}
                         />
-                        <Stack.Screen name="createSession" options={{ title: "Create a Session", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="joinSession/[id]" options={{ title: "Join Session", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="reportScore" options={{ title: "Report Score", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="profile/[user]" options={{ title: "", headerShown: false, headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="game/[id]" options={{ title: "Game Overview", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="settings" options={{ title: "Settings", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="updateProfile" options={{ title: "Update Profile", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="authpage" options={{ title: "Auth Page", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
-                        <Stack.Screen name="notifications" options={{ title: "Notifications", headerTintColor: '#1e3a8a', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="createSession" options={{ title: "Create a Session", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="joinSession/[id]" options={{ title: "Join Session", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="reportScore" options={{ title: "Report Score", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="profile/[user]" options={{ title: "", headerShown: false, headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="game/[id]" options={{ title: "Game Overview", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="settings" options={{ title: "Settings", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="updateProfile" options={{ title: "Update Profile", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="authpage" options={{ title: "Auth Page", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="notifications" options={{ title: "Notifications", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
                         <Stack.Screen
                             name="onboarding"
                             options={{

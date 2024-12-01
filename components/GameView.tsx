@@ -118,7 +118,7 @@ export default function GameView({gameData, explore}: GameViewProps) {
               sport_icon={session.sport_icon}
               size={16}
               sport_icon_source={session.sport_icon_source}
-              color={'rgb(30 58 138)'} />
+              color={'rgb(34 34 34)'} />
           <Text className="ml-2 text-gray-600">{session.sport}</Text>
         </View>
         <Text className="text-gray-700 text-sm font-semibold">
@@ -131,7 +131,7 @@ export default function GameView({gameData, explore}: GameViewProps) {
         {/* Profile Image */}
         <Image
           source={{ uri: session.username_icon }}
-          className="w-12 h-12 rounded-full border-2 border-blue-900"
+          className="w-12 h-12 rounded-full border-2 border-[#222222]"
         />
         <View className="ml-4">
           <Text className="text-lg font-bold text-gray-800">{session.session_name}</Text>
@@ -150,7 +150,7 @@ export default function GameView({gameData, explore}: GameViewProps) {
       </View>
 
       {/* Skill Level Tag */}
-      {/* <View className="self-start bg-blue-100 px-3 py-1 rounded-full">
+      {/* <View className="self-start bg-transparent px-3 py-1 rounded-full">
             <Text className="text-blue-700 text-xs">session.skillLevel</Text>
         </View> */}
     </View>

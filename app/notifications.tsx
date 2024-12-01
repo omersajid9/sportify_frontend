@@ -86,11 +86,11 @@ function NotificationIcon({ game_type }: NotificationIconProps) {
   // console.log(game_type)
   if (game_type == "game") {
     return (
-      <MaterialIcons name="scoreboard" size={24} color="rgb(30 58 138)" />
+      <MaterialIcons name="scoreboard" size={24} color="rgb(34 34 34)" />
     )
   } else {
     return (
-      <FontAwesome6 name="people-group" size={24} color="rgb(30 58 138)" />
+      <FontAwesome6 name="people-group" size={24} color="rgb(34 34 34)" />
 
     )
   }

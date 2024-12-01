@@ -11,7 +11,7 @@ export default function Profile() {
     const { user } = useAuth();
 
     return (
-        <View className='flex-1'>
+        <View className='flex-1 '>
             {/* <Stack.Screen
                 options={{
                     headerShown: true,

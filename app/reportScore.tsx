@@ -175,7 +175,7 @@ export default function ReportScore() {
 
           <View className=' flex-row py-2 px-2 justify-between'>
             <TouchableOpacity
-              className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+              className="flex flex-row justify-between items-center border-[#222222] border-2 px-4 py-3 rounded-lg w-full"
               onPress={onSessionPress}
             >
               <Text className="text-center">{session ? session.session_name : "Select Session"}</Text>
@@ -239,13 +239,13 @@ export default function ReportScore() {
             {scores.map((score, index) => (
               <View key={index} className="flex-row justify-evenly items-center w-full mb-4">
                 <TextInput
-                  className="border-2 border-blue-900 rounded-lg p-2 h-16 w-14 text-center text-2xl"
+                  className="border-2 border-[#222222] rounded-lg p-2 h-16 w-14 text-center text-2xl"
                   keyboardType="numeric"
                   value={score.team1}
                   onChangeText={value => handleScoreChange(index, 'team1', value)}
                 />
                 <TextInput
-                  className="border-2 border-blue-900 rounded-lg p-2 h-16 w-14 text-center text-2xl"
+                  className="border-2 border-[#222222] rounded-lg p-2 h-16 w-14 text-center text-2xl"
                   keyboardType="numeric"
                   value={score.team2}
                   onChangeText={value => handleScoreChange(index, 'team2', value)}

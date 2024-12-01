@@ -59,9 +59,9 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
           <Image
             key={player.id}
             source={{ uri: player.profile_picture }}
-            className='flex-1 border-2 border-blue-900 rounded-full w-14 h-14 m-1'
+            className='flex-1 border-2 border-[#222222] rounded-full w-14 h-14 m-1'
             // style={{right: 40 * index}}
-            // className={`rounded-full border-2 border-blue-900 absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
+            // className={`rounded-full border-2 border-[#222222] absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
             accessible
             accessibilityLabel={`Profile picture of ${player.username}`}
           />
@@ -83,7 +83,7 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
   );
 
   return (
-    <View className="bg-white rounded-lg shadow-lg p-4 my-4">
+    <View className="bg-white rounded-lg shadow-sm p-4 my-2">
       {/* Top Section */}
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-sm text-gray-500">

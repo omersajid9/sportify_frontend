@@ -81,7 +81,7 @@ const OnboardingScreen: React.FC = () => {
         {onboardingData.map((_, index) => (
           <View
             key={index}
-            className={`w-3 h-3 rounded-full mx-2 ${currentPage === index ? 'bg-blue-900' : 'bg-gray-300'
+            className={`w-3 h-3 rounded-full mx-2 ${currentPage === index ? 'bg-[#222222]' : 'bg-gray-300'
               }`}
           />
         ))}
@@ -94,7 +94,7 @@ const OnboardingScreen: React.FC = () => {
             onPress={() => pagerRef.current?.setPage(currentPage - 1)}
             className="px-4 py-2 rounded-lg"
           >
-            <Text className="text-blue-900 text-lg">Back</Text>
+            <Text className="text-[#222222] text-lg">Back</Text>
           </TouchableOpacity>
         )}
 
@@ -104,7 +104,7 @@ const OnboardingScreen: React.FC = () => {
               ? handleFinish
               : handleNextPage
           }
-          className="px-6 py-3 bg-blue-900 rounded-lg ml-auto"
+          className="px-6 py-3 bg-[#222222] rounded-lg ml-auto"
         >
           <Text className="text-white text-lg">
             {currentPage === onboardingData.length - 1 ? 'Get Started' : 'Next'}

@@ -311,7 +311,7 @@ export default function CreateSession() {
                 <GestureHandlerRootView>
                     <View className=' flex-row py-2 px-2 justify-between'>
                         <TouchableOpacity
-                            className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+                            className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm px-4 py-3 rounded-lg w-full"
                             onPress={onSportsPres}
                         >
                             <Text className='text-lg'>{sports.filter((s: any) => s.key == selectedSport)[0]?.name || "Select Sport Type"}</Text>
@@ -353,7 +353,7 @@ export default function CreateSession() {
 
                     <View className=' flex-row py-2 px-2 justify-between'>
                         <View
-                            className="flex flex-row justify-between items-center border-blue-900 border-2 pr-4 py-2 rounded-lg w-full gap-2"
+                            className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm pr-4 py-2 rounded-lg w-full gap-2"
                         >
                             <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                             <Pressable onPress={() => mapActionSheetRef.current?.show()}><FontAwesome6 name="map" size={24} color="black" /></Pressable>
@@ -378,7 +378,7 @@ export default function CreateSession() {
                     }
 
                     {/* <View className=' mt-3 justify-center items-center'>
-                        <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={() => mapActionSheetRef.current?.show()}>
+                        <Pressable className=' p-4 bg-[#222222] rounded-lg' onPress={() => mapActionSheetRef.current?.show()}>
                             <Text className=' text-white font-bold' >Pin on Map</Text>
                         </Pressable>
                     </View> */}
@@ -412,7 +412,7 @@ export default function CreateSession() {
                         <View>
                             <View className='  flex-row py-2 px-2 justify-between'>
                                 <Pressable
-                                    className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+                                    className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm px-4 py-3 rounded-lg w-full"
                                     onPress={() => dateTimeActionSheetRef.current?.show()}>
                                     <Text className='text-lg text-center'>{formatDate(dateTime)}</Text>
                                     <Octicons name="calendar" size={24} color="black" />
@@ -441,7 +441,7 @@ export default function CreateSession() {
                             </ActionSheet>
                             <View className='  flex-row py-2 px-2 justify-between'>
                                 <Pressable
-                                    className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+                                    className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm px-4 py-3 rounded-lg w-full"
                                     onPress={() => durationTimeActionSheetRef.current?.show()}>
                                     <Text className='text-lg text-center'>{extractDurationTime(durationTime)['hours']} hrs {extractDurationTime(durationTime)['minutes']} mins</Text>
                                     <MaterialCommunityIcons name="timer-settings-outline" size={24} color="black" />
@@ -476,7 +476,7 @@ export default function CreateSession() {
                                 <Text className='text-lg mb-2 font-bold'>Date</Text>
                                 <View className='justify-center items-center'>
                                     <Text className='text-lg mb-2'>{date.toDateString()}</Text>
-                                    <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={showDatePicker}>
+                                    <Pressable className=' p-4 bg-[#222222] rounded-lg' onPress={showDatePicker}>
                                         <Text className=' text-white font-bold' >Pick a date</Text>
                                     </Pressable>
                                 </View>
@@ -486,7 +486,7 @@ export default function CreateSession() {
                                 <Text className='text-lg mb-2 font-bold'>Time</Text>
                                 <View className='justify-center items-center'>
                                     <Text className='text-lg mb-2'>{time.toLocaleTimeString()}</Text>
-                                    <Pressable className=' p-4 bg-blue-900 rounded-lg' onPress={showTimePicker}>
+                                    <Pressable className=' p-4 bg-[#222222] rounded-lg' onPress={showTimePicker}>
                                         <Text className=' text-white font-bold' >Pick a time</Text>
                                     </Pressable>
 
@@ -497,7 +497,7 @@ export default function CreateSession() {
 
                     <View className='  flex-row py-2 px-2 justify-between'>
                         <TouchableOpacity
-                            className="flex flex-row justify-between items-center border-blue-900 border-2 px-4 py-3 rounded-lg w-full"
+                            className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm px-4 py-3 rounded-lg w-full"
                             onPress={onMaxPlayersPress}
                         >
                             <Text className='text-lg text-center'>{maxPlayers}</Text>
@@ -544,7 +544,7 @@ export default function CreateSession() {
                 </View> */}
 
                     <View className=' justify-center items-center'>
-                        <Pressable className=' p-4 bg-blue-900 rounded-lg w-min' onPress={handleSubmit}>
+                        <Pressable className=' p-4 bg-[#222222] rounded-lg w-min' onPress={handleSubmit}>
                             <Text className=' text-white font-bold w-min' >Submit</Text>
                         </Pressable>
                     </View>

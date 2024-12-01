@@ -17,20 +17,20 @@ export function ProfileHeader() {
             {user ?
                 <View className="flex-row items-center gap-4">
                     {/* <TouchableOpacity className="" onPress={() => router.push("/notifications")}>
-                        <Ionicons name="notifications" size={30} color="rgb(30 58 138)" />
+                        <Ionicons name="notifications" size={30} color="rgb(34 34 34)" />
                     </TouchableOpacity> */}
                     <TouchableOpacity className="" onPress={() => router.navigate("/settings")}>
-                        <Ionicons name="settings-outline" size={30} color="rgb(30 58 138)" />
+                        <Ionicons name="settings-outline" size={30} color="rgb(34 34 34)" />
                     </TouchableOpacity>
                     {/* <View> */}
                 </View>
                 :
                 <View className="flex-row items-center">
                     <Pressable className='py-1 h-12 flex flex-row items-center justify-center gap-2' onPress={() => SheetManager.show("authsheet")}>
-                        <Text className=' text-blue-900 font-bold text-lg'>
+                        <Text className=' text-[#222222] font-bold text-lg'>
                             Login
                         </Text>
-                        <Feather name="log-in" size={30} color="rgb(30 58 138)" />
+                        <Feather name="log-in" size={30} color="rgb(34 34 34)" />
                     </Pressable>
                 </View>
             }
@@ -51,12 +51,12 @@ export function HomeHeader() {
             {user ?
                 <View className="flex-row items-center gap-4">
                     <TouchableOpacity className="" onPress={() => router.push("/notifications")}>
-                        <Ionicons name="notifications-outline" size={30} color="rgb(30 58 138)" />
+                        <Ionicons name="notifications-outline" size={30} color="rgb(34 34 34)" />
                     </TouchableOpacity>
                     {/* <TouchableOpacity className="" onPress={() => router.navigate("/profile")}>
                         <Image
                             source={{ uri: user.profile_picture }}
-                            className="w-9 h-9 rounded-full border-2 border-blue-900"
+                            className="w-9 h-9 rounded-full border-2 border-[#222222]"
                         />
                     </TouchableOpacity> */}
 
@@ -65,10 +65,10 @@ export function HomeHeader() {
                 :
                 <View className="flex-row items-center">
                     <Pressable className='py-1 h-12 flex flex-row items-center justify-center gap-2' onPress={() => SheetManager.show("authsheet")}>
-                        <Text className=' text-blue-900 font-bold text-lg'>
+                        <Text className=' text-[#222222] font-bold text-lg'>
                             Login
                         </Text>
-                        <Feather name="log-in" size={30} color="rgb(30 58 138)" />
+                        <Feather name="log-in" size={30} color="rgb(34 34 34)" />
                     </Pressable>
                 </View>
             }
@@ -81,7 +81,7 @@ export function HomeHeader() {
 export function TitleHeader({ title }: { title: string }) {
     return (
         <View className="flex-row items-center justify-center px-4 py-3 bg-transparent  rounded-lg mx-2 shadow-lg shadow-neutral-400">
-            <Text className=' text-blue-900 font-bold text-lg'>
+            <Text className=' text-[#222222] font-bold text-lg'>
                 {title}
             </Text>
         </View>

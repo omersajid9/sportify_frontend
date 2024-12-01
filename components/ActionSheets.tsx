@@ -107,7 +107,7 @@ function AuthSheet() {
                                         autoCapitalize="none"
                                         nativeID="otp"
                                         style={{ textAlignVertical: 'center', textAlign: 'center', fontSize: 18 }}
-                                        className="w-full py-3 border-2 border-blue-900 rounded-lg px-4"
+                                        className="w-full py-3 border-2 border-[#222222] rounded-lg px-4"
                                         keyboardType='number-pad'
                                     />
                                 }
@@ -122,7 +122,7 @@ function AuthSheet() {
                                     autoCapitalize="none"
                                     nativeID="email"
                                     style={{ textAlignVertical: 'center', textAlign: 'justify', fontSize: 18 }}
-                                    className="w-full py-3 border-2 border-blue-900 rounded-lg px-4 "
+                                    className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
                                 />
                                 <TextInput
                                     value={password}
@@ -132,7 +132,7 @@ function AuthSheet() {
                                     autoCapitalize="none"
                                     nativeID="password"
                                     style={{ textAlignVertical: 'center', textAlign: 'justify', fontSize: 18 }}
-                                    className="w-full py-3 border-2 border-blue-900 rounded-lg px-4 "
+                                    className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
                                 />
                             </>
                         }

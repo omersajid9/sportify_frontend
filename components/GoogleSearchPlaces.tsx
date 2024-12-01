@@ -41,14 +41,6 @@ export default function GoogleSearchPlaces({ setPredictions, query, setQuery, pl
 
     return (
         <View className="flex-1 justify-center items-center" >
-            {/* <TextInput 
-            cancelsTouchesInView={true}
-            className='text-lg '
-            style={{ textAlignVertical: 'center' }}
-                placeholder={placeholder}
-                value={query}
-                onChangeText={updateSearch}
-            /> */}
             <SafeSearchBar
                 platform="ios"
                 placeholder={placeholder}
@@ -70,31 +62,25 @@ export default function GoogleSearchPlaces({ setPredictions, query, setQuery, pl
 const styles = StyleSheet.create({
     searchBarContainer: {
         backgroundColor: 'transparent',
+        justifyContent: 'center', // Centers content vertically in the container
+        alignItems: 'center',
     },
     inputText: {
-        textAlignVertical: 'center',
+        textAlignVertical: 'center', // Ensures text is vertically centered
+        color: '#222222',
+        justifyContent: 'center', // Centers content vertically in the container
         alignItems: 'center',
-
-        color: 'green',
+        marginBottom: 5
     },
     inputContainer: {
-        textAlignVertical: 'center',
         backgroundColor: 'transparent',
         borderRadius: 8,
         flex: 1,
+        // height: 40, // Controls the height of the input container
+        paddingVertical: 5, // Adjust padding as needed
+        justifyContent: 'center', // Centers content vertically in the container
         alignItems: 'center',
-        paddingVertical: 3,
-        justifyContent: 'center',
-        alignContent: 'center',
-        // borderColor: 'rgb(30 58 138)',
-        // borderWidth: 2,
-        // borderBottomWidth: 2,
         overflow: 'hidden',
-        // fontSize: 18,
-        // lineHeight: 28,
-        color: 'black',
-        tintColor: 'black',
-
     },
     rightIcon: {
         justifyContent: 'center',

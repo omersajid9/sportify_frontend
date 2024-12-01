@@ -52,9 +52,9 @@ interface ModeIconProps {
 
 function ModeIcon({ mode }: ModeIconProps) {
   if (mode === 'single') {
-    return <Ionicons name="person-outline" size={18} color="rgb(30 58 138)" />;
+    return <Ionicons name="person-outline" size={18} color="rgb(34 34 34)" />;
   }
-  return <Ionicons name="people-outline" size={18} color="rgb(30 58 138)" />;
+  return <Ionicons name="people-outline" size={18} color="rgb(34 34 34)" />;
 }
 
 export default function ProfileScreen({ user }: ProfileScreenProps) {
@@ -93,7 +93,7 @@ export default function ProfileScreen({ user }: ProfileScreenProps) {
                       sport_icon={item.sport_icon}
                       sport_icon_source={item.sport_icon_source}
                       size={18}
-                      color="rgb(30 58 138)"
+                      color="rgb(34 34 34)"
                     />
                     <Text className="text-base font-bold mx-2">{item.sport}</Text>
                   </View>
@@ -131,12 +131,12 @@ export default function ProfileScreen({ user }: ProfileScreenProps) {
   };
 
   return (
-    <View className="flex-1 px-4 py-3">
+    <View className="flex-1 px-4 ">
       <View className="bg-transparent rounded-lg justify-center items-center">
-        <View className="flex-col items-center justify-center gap-3">
+        <View className="flex-col items-center justify-center gap-3 py-2">
           <Image
             source={{ uri: user.profile_picture }}
-            className="w-20 h-20 rounded-full border-2 border-blue-900"
+            className="w-20 h-20 rounded-full border-2 border-[#222222]"
           />
           <View>
             <Text className="text-xl font-bold">{user.username}</Text>

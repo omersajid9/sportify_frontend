@@ -194,7 +194,7 @@ interface ProfileCardProps {
 //       <View className={` w-8 h-8 rounded-full overflow-hidden ${marginClass}`}>
 //         <Image
 //           source={{ uri: player.profile_picture }}
-//           className=" w-full h-full rounded-full border-2 border-blue-900 mr-4"
+//           className=" w-full h-full rounded-full border-2 border-[#222222] mr-4"
 //         />
 //       </View>
 //       <Text className="text-base">{player.username}</Text>
@@ -241,7 +241,7 @@ function GameCard({ game }: GameResultViewProps) {
       <Image
         key={player.id}
         source={{ uri: player.profile_picture }}
-        className={`rounded-full border-2 border-blue-900 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-6 h-6 '}`}
+        className={`rounded-full border-2 border-[#222222] ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-6 h-6 '}`}
         accessible
         accessibilityLabel={`Profile picture of ${player.username}`}
       />

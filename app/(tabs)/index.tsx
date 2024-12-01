@@ -37,7 +37,7 @@ export default function MyTabs() {
           },
           tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' }, // Slightly larger and bolder text for better readability
           tabBarItemStyle: { flex: 1 }, // Use flex to evenly distribute items
-          tabBarActiveTintColor: 'rgb(30 58 138)', // Active tab color
+          tabBarActiveTintColor: 'rgb(34 34 34)', // Active tab color
           tabBarInactiveTintColor: 'gray', // Inactive tab color  
         }}
         >
