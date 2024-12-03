@@ -33,27 +33,11 @@ export default function Home() {
             {user ?
                 <View className=' flex-1 h-full'>
                     <View className=' flex-1 h-full'>
-                        <AnimatePresence>
-                            {tab == 'Upcoming' ? (
-                                <MotiView
-                                    key="upcoming"
-                                    from={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                >
-                                    <GoingPage />
-                                </MotiView>
-                            ) : (
-                                <MotiView
-                                    key="past"
-                                    from={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                >
-                                    <PastPage />
-                                </MotiView>
-                            )}
-                        </AnimatePresence>
+                        {tab == 'Upcoming' ? (
+                            <GoingPage />
+                        ) : (
+                            <PastPage />
+                        )}
                     </View>
                 </View>
                 :
@@ -69,7 +53,7 @@ export default function Home() {
 function TabButton({ text, tab, setTab }: { text: String, tab: String, setTab: (text: string) => void }) {
     return (
         <TouchableOpacity onPress={() => setTab(text.toString())} >
-            <MotiView
+            {/* <MotiView
                 style={{
                     backgroundColor: text === tab ? '#222222' : '#e0e0e0', // Light gray
                 }}
@@ -83,12 +67,29 @@ function TabButton({ text, tab, setTab }: { text: String, tab: String, setTab: (
                     stiffness: 150,
                 }}
                 className="flex items-center justify-center  px-3 rounded-lg py-2 shadow-sm w-28"
-            >
-                <Text className={` ${text === tab ? ' text-[#F2F2F2]': ' text-[#222222'}`}>{text}</Text>
-            </MotiView>
+            > */}
+                <Text className={` ${text === tab ? ' text-[#F2F2F2]' : ' text-[#222222'}`}>{text}</Text>
+            {/* </MotiView> */}
         </TouchableOpacity>
     )
 }
 
 
 
+{/* <MotiView
+key="upcoming"
+from={{ opacity: 0 }}
+animate={{ opacity: 1 }}
+exit={{ opacity: 0 }}
+>
+<GoingPage />
+</MotiView>
+) : (
+<MotiView
+key="past"
+from={{ opacity: 0 }}
+animate={{ opacity: 1 }}
+exit={{ opacity: 0 }}
+>
+<PastPage />
+</MotiView> */}

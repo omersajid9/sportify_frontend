@@ -23,11 +23,11 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
   }
 
   return (
-    <View className="flex-1">
-      <View className="rounded-lg mx-4 overflow-hidden">
+    <View className="flex-1 shadow-sm">
+      <View className="rounded-lg mx-4 overflow-hidden shadow-sm">
         <TouchableOpacity
           onPress={() => setIsExpanded(!isExpanded)}
-          className="flex flex-row justify-between items-center border-[#222222] border-2 px-4 py-3 rounded-lg w-full"
+          className="flex flex-row justify-between items-center bg-[#e0e0e0] px-4 py-3 rounded-lg w-full shadow-sm"
         >
           <Text className="text-gray-600 text-sm">{placeholder}</Text>
           <MaterialIcons
@@ -69,11 +69,11 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
         {selectedPlayers?.map((member: UserDetails, index: number) => (
           <View
             key={index}
-            className="bg-transparent px-3 py-1 mx-1 my-1 rounded-full flex-row items-center"
+            className="bg-[#e0e0e0] px-3 py-1 mx-1 my-1 rounded-full flex-row items-center shadow-sm"
           >
-            <Text className="text-blue-800 text-sm mr-1">{member.username}</Text>
+            <Text className="text-[#222222] text-sm mr-1">{member.username}</Text>
             <TouchableOpacity onPress={() => toggleMember(member)} className="ml-1">
-              <MaterialIcons name="close" size={16} color="#1e40af" />
+              <MaterialIcons name="close" size={16} color="#222222" />
             </TouchableOpacity>
           </View>
         ))}

@@ -160,63 +160,62 @@ export default function ExplorePage() {
                 setFetchingSports={setFetchingSports}
             />
 
-
-            <View className='flex-row justify-between my-2'>
+            <View className='flex-row justify-between my-1'>
                 <View className='flex-1 bg-[#e0e0e0] shadow-sm rounded-lg mx-4 align-middle' >
                     <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                 </View>
                 <View className="flex-row gap-1 items-center justify-center mr-2">
                     <TouchableOpacity
+                        className={`px-4 py-2 rounded-lg border-2 ${view === 'list' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
+                        }`}                
                         onPress={() => setView('list')}
                     >
-                        <MotiView
+                        {/* <MotiView
                             style={{
                                 backgroundColor: view === 'list' ? '#222222' : '#e0e0e0', // Light gray
-                                margin: 5
+                                marginHorizontal: 3
                             }}
                             animate={{
-                                scale: view === 'list' ? 1.1 : 1,
+                                scale: view === 'list' ? 1.2 : 1,
                                 opacity: view === 'list' ? 1 : 0.6,
                             }}
                             transition={{
                                 type: 'spring',
                                 damping: 15,
-                                stiffness: 500,
+                                stiffness: 150,
                             }}
-                            className="px-4 py-2 rounded-lg"
-                        >
+                            className="px-4 py-2 rounded-lg shadow-sm"
+                        > */}
                             <Text className={`font-semibold ${view === 'list' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>List</Text>
-                        </MotiView>
+                        {/* </MotiView> */}
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        // className={`px-4 py-2 rounded-lg border-2 ${view === 'map' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
-                        //     }`}
+                        className={`px-4 py-2 rounded-lg border-2 ${view === 'map' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
+                            }`}
                         onPress={() => setView('map')}
                     >
-                        <MotiView
+                        {/* <MotiView
                             style={{
                                 backgroundColor: view === 'map' ? '#222222' : '#e0e0e0', // Light gray
-                                margin: 5
+                                marginHorizontal: 3
                             }}
                             animate={{
-                                scale: view === 'map' ? 1.1 : 1,
+                                scale: view === 'map' ? 1.2 : 1,
                                 opacity: view === 'map' ? 1 : 0.6,
                             }}
                             transition={{
                                 type: 'spring',
                                 damping: 15,
-                                stiffness: 500,
+                                stiffness: 150,
                             }}
-                            className="px-4 py-2 rounded-lg"
-                        >
+                            className="px-4 py-2 rounded-lg shadow-sm"
+                        > */}
                             <Text className={`font-semibold ${view === 'map' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>Map</Text>
-                        </MotiView>
+                        {/* </MotiView> */}
                     </TouchableOpacity>
                 </View>
             </View>
-
-
 
             {isLoading && view === 'list' ?
                 <Loader />

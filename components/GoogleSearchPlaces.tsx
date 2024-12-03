@@ -49,9 +49,12 @@ export default function GoogleSearchPlaces({ setPredictions, query, setQuery, pl
                 searchIcon={<Pressable onPress={refreshLocation}><Octicons name="location" size={20} color="black" /></Pressable>}
                 clearIcon={false}
                 inputContainerStyle={styles.inputContainer}
-                containerStyle={styles.searchBarContainer}
-                rightIconContainerStyle={styles.rightIcon}
-                inputStyle={styles.inputText}
+        containerStyle={styles.searchBarContainer}
+        rightIconContainerStyle={styles.rightIcon}
+                // inputContainerStyle={styles.inputContainer}
+                // containerStyle={styles.searchBarContainer}
+                // rightIconContainerStyle={styles.rightIcon}
+                // inputStyle={styles.inputText}
                 clearTextOnFocus={false}
                 placeholderTextColor={'black'}
             />
@@ -59,30 +62,50 @@ export default function GoogleSearchPlaces({ setPredictions, query, setQuery, pl
     );
 }
 
+// const styles = StyleSheet.create({
+//     searchBarContainer: {
+//         backgroundColor: 'transparent',
+//         justifyContent: 'center', // Centers content vertically in the container
+//         alignItems: 'center',
+//     },
+//     inputText: {
+//         textAlignVertical: 'center', // Ensures text is vertically centered
+//         color: '#222222',
+//         justifyContent: 'center', // Centers content vertically in the container
+//         alignItems: 'center',
+//         marginBottom: 5
+//     },
+//     inputContainer: {
+//         backgroundColor: 'transparent',
+//         borderRadius: 8,
+//         flex: 1,
+//         // height: 40, // Controls the height of the input container
+//         paddingVertical: 5, // Adjust padding as needed
+//         justifyContent: 'center', // Centers content vertically in the container
+//         alignItems: 'center',
+//         overflow: 'hidden',
+//     },
+//     rightIcon: {
+//         justifyContent: 'center',
+//     },
+// });
+
 const styles = StyleSheet.create({
     searchBarContainer: {
-        backgroundColor: 'transparent',
-        justifyContent: 'center', // Centers content vertically in the container
-        alignItems: 'center',
-    },
-    inputText: {
-        textAlignVertical: 'center', // Ensures text is vertically centered
-        color: '#222222',
-        justifyContent: 'center', // Centers content vertically in the container
-        alignItems: 'center',
-        marginBottom: 5
+      backgroundColor: 'transparent',
     },
     inputContainer: {
         backgroundColor: 'transparent',
-        borderRadius: 8,
-        flex: 1,
-        // height: 40, // Controls the height of the input container
-        paddingVertical: 5, // Adjust padding as needed
-        justifyContent: 'center', // Centers content vertically in the container
-        alignItems: 'center',
-        overflow: 'hidden',
+    //   backgroundColor: '#EAEAEA',
+      borderRadius: 20,
+      height: 40,
+    //   flex: 1
+    //   paddingHorizontal: 5,
+    //   borderColor: 'rgb(30 58 138)',
+    //   borderWidth: 2,
+    //   borderBottomWidth: 2
     },
     rightIcon: {
-        justifyContent: 'center',
+      justifyContent: 'center',
     },
-});
+  });

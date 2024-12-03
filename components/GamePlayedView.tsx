@@ -51,21 +51,16 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
 
   const renderUserProfilePictures = (players: Player[], side: string) =>
     players.map((player, index) => (
-      <View
-      key={player.id}
-      className={`rounded-full  absolute  bg-white`}
-      style={{right: 40 * index}}
-      >
           <Image
             key={player.id}
             source={{ uri: player.profile_picture }}
-            className='flex-1 border-2 border-[#222222] rounded-full w-14 h-14 m-1'
+            className=' border-2 border-[#222222] rounded-full w-14 h-14 -mx-2 shadow-sm'
+            style={{zIndex: index * (side == 'left' ? -1: 1)}}
             // style={{right: 40 * index}}
             // className={`rounded-full border-2 border-[#222222] absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
             accessible
             accessibilityLabel={`Profile picture of ${player.username}`}
           />
-      </View>
     ));
 
   const renderScores = () => (
@@ -101,24 +96,24 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
         onPress={() => router.push(`/game/${game.id}`)}
         className="rounded-lg"
       >
-        <View className="flex-row justify-between items-center border-2">
-          <View className="flex-row flex-wrap w-1/3  border-2 h-full">{renderUserProfilePictures(game.team_1_users.slice(0, 4), 'left')}</View>
-          <View className="items-center w-1/3 py-10">{renderScores()}</View>
-          <View className="flex-row flex-wrap w-1/3  border-2 h-full">{renderUserProfilePictures(game.team_2_users.slice(0, 4), 'right')}</View>
+        <View className="flex-row justify-between items-center ">
+          <View className="flex-row w-5/12  h-full justify-start px-2 items-center">{renderUserProfilePictures(game.team_1_users.slice(0, 3), 'left')}</View>
+          <View className="items-center w-2/12 ">{renderScores()}</View>
+          <View className="flex-row w-5/12  h-full justify-end px-2 items-center">{renderUserProfilePictures(game.team_2_users.slice(0, 3), 'right')}</View>
         </View>
       </TouchableOpacity>
 
       {/* Show Usernames Button */}
       <TouchableOpacity
         onPress={toggleUsernames}
-        className="flex-row items-center justify-center bg-neutral-200 mt-4 py-2 rounded-lg"
+        className="flex-row mx-auto px-4 items-center justify-center bg-[#222222] mt-4 py-2 rounded-lg"
       >
         <Entypo
           name={showUsernames ? 'chevron-up' : 'chevron-down'}
           size={24}
-          color="black"
+          color="#F2F2F2"
         />
-        <Text className="ml-2 text-center text-black font-medium">
+        <Text className="ml-2 text-center text-[#F2F2F2] font-medium">
           {showUsernames ? 'Hide Usernames' : 'Show Usernames'}
         </Text>
       </TouchableOpacity>
@@ -129,14 +124,14 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
           <View>
             {game.team_1_users.map((player) => (
               <Text key={player.id} className="text-sm text-gray-700">
-                {player.username}
+                @{player.username}
               </Text>
             ))}
           </View>
           <View>
             {game.team_2_users.map((player) => (
               <Text key={player.id} className="text-sm text-gray-700">
-                {player.username}
+                @{player.username}
               </Text>
             ))}
           </View>

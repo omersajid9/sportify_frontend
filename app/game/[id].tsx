@@ -104,10 +104,10 @@ export default function Game() {
       {user?.id != game.reporter_user.id && game.players.includes(user?.id) && !game.total.includes(user?.id) &&
         <View className='flex-row justify-around mt-6 mb-4'>
           <TouchableOpacity onPress={() => handleSubmit("No")}>
-            <View className=' bg-red-300 py-2 px-4 rounded-lg'><Text>Reject</Text></View>
+            <View className=' bg-red-300 py-2 px-4 rounded-lg shadow-sm'><Text>Reject</Text></View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleSubmit("Yes")}>
-            <View className=' bg-green-300 py-2 px-4 rounded-lg'><Text>Accept</Text></View>
+            <View className=' bg-green-300 py-2 px-4 rounded-lg shadow-sm'><Text>Accept</Text></View>
           </TouchableOpacity>
         </View>
       }
@@ -115,14 +115,14 @@ export default function Game() {
 
       <TouchableOpacity
         onPress={toggleUsernames}
-        className="flex-row items-center justify-center bg-neutral-200 mt-4 py-2 rounded-lg"
+        className="flex-row mx-auto px-4 items-center justify-center bg-[#222222] mt-4 py-2 rounded-lg"
       >
         <Entypo
           name={showUsernames ? 'chevron-up' : 'chevron-down'}
           size={24}
-          color="black"
+          color="#F2F2F2"
         />
-        <Text className="ml-2 text-center text-black font-medium">
+        <Text className="ml-2 text-center text-[#F2F2F2] font-medium">
           {showUsernames ? 'Hide Usernames' : 'Show Usernames'}
         </Text>
       </TouchableOpacity>
@@ -133,14 +133,14 @@ export default function Game() {
           <View>
             {game.team_1_users.map((player: Player) => (
               <Text key={player.id} id={player.id} className="text-sm text-gray-700">
-                {player.username}
+                @{player.username}
               </Text>
             ))}
           </View>
           <View>
             {game.team_2_users.map((player: Player) => (
               <Text key={player.id} id={player.id} className="text-sm text-gray-700">
-                {player.username}
+                @{player.username}
               </Text>
             ))}
           </View>
@@ -235,16 +235,20 @@ interface ProfileCardProps {
 
 function GameCard({ game }: GameResultViewProps) {
 
+  console.log(game)
 
   const renderUserProfilePictures = (players: Player[], side: string) =>
     players.map((player, index) => (
-      <Image
-        key={player.id}
-        source={{ uri: player.profile_picture }}
-        className={`rounded-full border-2 border-[#222222] ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-6 h-6 '}`}
-        accessible
-        accessibilityLabel={`Profile picture of ${player.username}`}
-      />
+          <Image
+            key={player.id}
+            source={{ uri: player.profile_picture }}
+            className=' border-2 border-[#222222] rounded-full w-14 h-14 -mx-2 shadow-sm'
+            style={{zIndex: index * (side == 'left' ? -1: 1)}}
+            // style={{right: 40 * index}}
+            // className={`rounded-full border-2 border-[#222222] absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
+            accessible
+            accessibilityLabel={`Profile picture of ${player.username}`}
+          />
     ));
 
   const renderScores = () => (
@@ -266,9 +270,9 @@ function GameCard({ game }: GameResultViewProps) {
       <View className="flex-row justify-between items-center">
 
         <View className="flex-row justify-between items-center">
-          <View className="flex-row flex-wrap gap-2 w-1/3 ">{renderUserProfilePictures(game.team_1_users.slice(0, 3), 'left')}</View>
-          <View className="items-center w-1/3">{renderScores()}</View>
-          <View className="flex-row flex-wrap gap-2 w-1/3 justify-end ">{renderUserProfilePictures(game.team_2_users.slice(0, 3), 'right')}</View>
+        <View className="flex-row w-5/12  h-full justify-start px-2 items-center">{renderUserProfilePictures(game.team_1_users.slice(0, 3), 'left')}</View>
+          <View className="items-center w-2/12 ">{renderScores()}</View>
+          <View className="flex-row w-5/12  h-full justify-end px-2 items-center">{renderUserProfilePictures(game.team_2_users.slice(0, 3), 'right')}</View>
         </View>
 
 

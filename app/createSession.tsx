@@ -222,7 +222,7 @@ export default function CreateSession() {
     };
 
     const handleSubmit = async () => {
-        var sessionName = getTimeOfDay(time) + '' + sports.filter((s: any) => s.key == selectedSport)[0]?.name;
+        var sessionName = getTimeOfDay(time) + ' ' + sports.filter((s: any) => s.key == selectedSport)[0]?.name;
         if (selectedSport == "Select a sport" || !selectedSport) {
             alert("Please select a sport");
             return;
@@ -353,7 +353,7 @@ export default function CreateSession() {
 
                     <View className=' flex-row py-2 px-2 justify-between'>
                         <View
-                            className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm pr-4 py-2 rounded-lg w-full gap-2"
+                            className="flex flex-row justify-between items-center bg-[#e0e0e0] shadow-sm pr-4 py-2 rounded-lg w-full gap-2 h-11"
                         >
                             <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                             <Pressable onPress={() => mapActionSheetRef.current?.show()}><FontAwesome6 name="map" size={24} color="black" /></Pressable>
@@ -543,9 +543,9 @@ export default function CreateSession() {
                     />
                 </View> */}
 
-                    <View className=' justify-center items-center'>
+                    <View className=' justify-center items-center p-10'>
                         <Pressable className=' p-4 bg-[#222222] rounded-lg w-min' onPress={handleSubmit}>
-                            <Text className=' text-white font-bold w-min' >Submit</Text>
+                            <Text className=' text-white font-bold w-min' >Create</Text>
                         </Pressable>
                     </View>
                 </GestureHandlerRootView>

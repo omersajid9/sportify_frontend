@@ -60,6 +60,19 @@ function RootLayoutNav() {
         }
     }
 
+    var title = ""
+    if (segments[segments.length - 1] == "user") {
+        title = "Profile"
+    } else if (segments[segments.length - 1] == "(tabs)") {
+        title = "Home"
+    } else if (segments[segments.length - 1] == "activity") {
+        title = "Activity"
+    } else {
+        title = "Explore"
+    }
+
+
+
     // const unsubscribe = NetInfo.addEventListener(state => {
     //     console.log('Connection type', state.type);
     //     console.log('Is connected?', state.isConnected);
@@ -74,13 +87,14 @@ function RootLayoutNav() {
                             name="(tabs)"
                             options={{
                                 title: "",
-                                headerShown: false,
-                                // headerRight: () => <TabHeader />,
+                                // headerShown: false,
+                                headerRight: () => <TabHeader />,
+                                headerTitle: title,
                                 // // headerTransparent: true,
-                                // // headerBackground: 'transparent'
-                                // headerStyle: { backgroundColor: '#F2F2F2' },
-                                // headerShadowVisible: false,
-                                // headerTintColor: '#222222',
+                                // headerBackground: 'transparent'
+                                headerStyle: { backgroundColor: '#F2F2F2' },
+                                headerShadowVisible: false,
+                                headerTintColor: '#222222',
 
                                 // header: () => <Header />
                             }}

@@ -3,7 +3,7 @@ import { router, useRouter, useSegments } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { BASE_URL } from "../../app.config";
-import { getValueFor, save } from "./store";
+import { getJsonValueFor, getValueFor, save, saveJson } from "./store";
 import Location, { getCurrentPositionAsync, getLastKnownPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
 import axiosInstance from "../../services/api";
 import eventEmitter from "../../services/eventEmitter";
@@ -86,7 +86,7 @@ export function Provider(props: ProviderProps) {
 
     useEffect(() => {
       const reStoreUser = async () => {
-        const store_user = await getValueFor("user");
+        const store_user = await getJsonValueFor("user");
         if (user && store_user.id != user.id) {
           if (store_user) {
             setAuth(store_user);
@@ -100,17 +100,21 @@ export function Provider(props: ProviderProps) {
 
 
     useEffect(() => {
-      const inAuthGroup = segments[0] === "(auth)";
+      const inAuthGroup = segments[0] === "(tabs)";
       if (!authInitialized) return;
 
       const handleRefershToken = async () => {
-        // console.log("YAYYY")
+        console.log("handle refresh")
         await refreshToken(); // Call logout when the event is emitted
       };
       const handleLogout = async () => {
-        // console.log("YAYYY")
+        console.log("handle logout")
         await logout(true); // Call logout when the event is emitted
       };
+
+      if (!user && !inAuthGroup) {
+        router.navigate("/")
+      }
       // router.replace('/onboarding');
 
   
@@ -152,7 +156,7 @@ export function Provider(props: ProviderProps) {
 
   useEffect(() => {
     const init = async () => {
-      const store_user = await getValueFor("user");
+      const store_user = await getJsonValueFor("user");
       await getLocation();
       if (store_user) {
         setAuth(store_user);
@@ -168,7 +172,7 @@ export function Provider(props: ProviderProps) {
 
   const removeNotificationToken = async () => {
     const token = await getValueFor("notification_token");
-    const user = await getValueFor("user");
+    const user = await getJsonValueFor("user");
     if (token && user) {
       try {
         const data = {
@@ -188,7 +192,7 @@ export function Provider(props: ProviderProps) {
 
   async function saveNotificationToken() {
     const token = await getValueFor("notification_token");
-    const user = await getValueFor("user");
+    const user = await getJsonValueFor("user");
     if (token && user) {
       try {
         const data = {
@@ -218,7 +222,7 @@ export function Provider(props: ProviderProps) {
       await removeNotificationToken();
     }
     await save("auth_token", null);
-    await save("user", null);
+    await saveJson("user", null);
     setAuth(null);
     return { error: undefined, data: "done" }
   };
@@ -260,17 +264,17 @@ export function Provider(props: ProviderProps) {
         console.log("User", user)
         await save("auth_token", response.data.auth_token.token);
         setAuth(user);
-        await save("user", user);
+        await saveJson("user", user);
         await saveNotificationToken();
         return { data: user, error: undefined };
       } else {
-        await save("user", null);
+        await saveJson("user", null);
         setAuth(null);
         return { error: "Something went wrong with request", data: undefined };
       }
     } catch (error: any) {
       console.log(error)
-      await save("user", null);
+      await saveJson("user", null);
       await save("auth_token", null);
       if (error.response && error.response.status === 401) {
         Alert.alert("Login Failed", "Invalid username or password");
@@ -294,7 +298,7 @@ export function Provider(props: ProviderProps) {
       if (response.status == 200) {
         const user = response.data.user;
         setAuth(user);
-        await save("user", user);
+        await saveJson("user", user);
       } else {
 
       }

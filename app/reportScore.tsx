@@ -1,7 +1,7 @@
 import { Picker } from '@react-native-picker/picker';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, TouchableWithoutFeedback, Keyboard, Alert, Platform, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button, TouchableWithoutFeedback, Keyboard, Alert, Platform, ScrollView, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from './context/auth';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
@@ -171,11 +171,11 @@ export default function ReportScore() {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ScrollView>
 
-        <View className="flex-1 items-center px-6 h-full">
+        <View className="flex-1 items-center p-6 h-full">
 
-          <View className=' flex-row py-2 px-2 justify-between'>
+          <View className=' flex-row py-2 px-2 justify-between shadow-sm'>
             <TouchableOpacity
-              className="flex flex-row justify-between items-center border-[#222222] border-2 px-4 py-3 rounded-lg w-full"
+              className="flex flex-row justify-between items-center bg-[#e0e0e0] px-4 py-3 rounded-lg w-full"
               onPress={onSessionPress}
             >
               <Text className="text-center">{session ? session.session_name : "Select Session"}</Text>
@@ -239,13 +239,13 @@ export default function ReportScore() {
             {scores.map((score, index) => (
               <View key={index} className="flex-row justify-evenly items-center w-full mb-4">
                 <TextInput
-                  className="border-2 border-[#222222] rounded-lg p-2 h-16 w-14 text-center text-2xl"
+                  className="bg-[#e0e0e0] rounded-lg p-2 h-16 w-14 text-center text-2xl shadow-sm"
                   keyboardType="numeric"
                   value={score.team1}
                   onChangeText={value => handleScoreChange(index, 'team1', value)}
                 />
                 <TextInput
-                  className="border-2 border-[#222222] rounded-lg p-2 h-16 w-14 text-center text-2xl"
+                  className="bg-[#e0e0e0] rounded-lg p-2 h-16 w-14 text-center text-2xl shadow-sm"
                   keyboardType="numeric"
                   value={score.team2}
                   onChangeText={value => handleScoreChange(index, 'team2', value)}
@@ -254,9 +254,12 @@ export default function ReportScore() {
             ))}
           </View>
 
-          <View className="my-6">
-            <Button title="Submit" onPress={handleSubmit} />
+          <View className=' justify-center items-center p-10'>
+            <Pressable className=' p-4 bg-[#222222] rounded-lg w-min' onPress={handleSubmit}>
+              <Text className=' text-white font-bold w-min' >Report</Text>
+            </Pressable>
           </View>
+
         </View>
       </ScrollView>
     </TouchableWithoutFeedback>
