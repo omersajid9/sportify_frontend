@@ -3,31 +3,37 @@ import { View, StyleSheet, Text, Pressable } from 'react-native';
 import React from 'react';
 import { jwtDecode } from 'jwt-decode';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useAuth } from '../app/context/auth';
 
-async function appleSignIn() {
-  try {
-    const credential = await AppleAuthentication.signInAsync({
-      requestedScopes: [
-        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        AppleAuthentication.AppleAuthenticationScope.EMAIL,
-      ],
-    });
-
-    if (credential.identityToken) {
-      const decoded = jwtDecode(credential.identityToken);
-      console.log('decoded token: ', decoded);
-    }
-    console.log(credential)
-  } catch (e: any) {
-    if (e.code === 'ERR_REQUEST_CANCELED') {
-      // handle that the user canceled the sign-in flow
-    } else {
-      // handle other errors
-    }
-  }
-}
 
 export default function Apple() {
+  const {logIn} = useAuth();
+
+  async function appleSignIn() {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+  
+      if (credential.email) {
+        logIn('apple', credential.email, undefined, credential.fullName?.givenName ?? undefined, credential.fullName?.familyName ?? undefined)
+      } else if (credential.identityToken) {
+        const decoded: any = jwtDecode(credential.identityToken);
+        logIn('apple', decoded.email, undefined, undefined, undefined)
+      }
+      
+    } catch (e: any) {
+      if (e.code === 'ERR_REQUEST_CANCELED') {
+        // handle that the user canceled the sign-in flow
+      } else {
+        // handle other errors
+      }
+    }
+  }
+  
   return (
     <View className='flex items-center'>
       <Pressable
@@ -38,11 +44,3 @@ export default function Apple() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

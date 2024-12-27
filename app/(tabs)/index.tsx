@@ -17,13 +17,6 @@ import { HomeHeader } from '../../components/Header';
 export default function MyTabs() {
   return (
     <View className='flex-1'>
-      {/* <Stack.Screen
-        options={{
-          headerShown: true,
-          header: () => <HomeHeader />
-        }}
-      /> */}
-
       <ExplorePage />
       {/* <Tab.Navigator
         screenOptions={{

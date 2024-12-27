@@ -1,7 +1,7 @@
 import { useAuth } from "../app/context/auth";
 import { View, Text, TouchableOpacity, Image, Pressable } from 'react-native';
 import React from 'react'
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons, Octicons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -9,7 +9,7 @@ export function ProfileHeader() {
     const { user } = useAuth();
 
     return (
-        <View className="pb-2 bg-transparent  rounded-lg mx-2 shadow-lg shadow-neutral-400">
+        <View className="pb-2 bg-transparent  rounded-lg mx-2 ">
             {/* <View className="flex-row items-center justify-center">
 
             </View> */}
@@ -20,7 +20,7 @@ export function ProfileHeader() {
                         <Ionicons name="notifications" size={30} color="rgb(34 34 34)" />
                     </TouchableOpacity> */}
                     <TouchableOpacity className="" onPress={() => router.navigate("/settings")}>
-                        <Ionicons name="settings-outline" size={30} color="rgb(34 34 34)" />
+                        <Octicons name="gear" size={30} color="rgb(34 34 34)" />
                     </TouchableOpacity>
                     {/* <View> */}
                 </View>
@@ -30,7 +30,7 @@ export function ProfileHeader() {
                         <Text className=' text-[#222222] font-bold text-lg'>
                             Login
                         </Text>
-                        <Feather name="log-in" size={30} color="rgb(34 34 34)" />
+                        <Octicons name="sign-in" size={30} color="rgb(34 34 34)" />
                     </Pressable>
                 </View>
             }
@@ -44,14 +44,14 @@ export function HomeHeader() {
     const { user } = useAuth();
     return (
 
-        <View className="pb-2 bg-transparent  rounded-lg mx-2 shadow-lg shadow-neutral-400">
+        <View className="pb-2 bg-transparent  rounded-lg mx-2  shadow-neutral-400">
             <View className="flex-row items-center justify-center">
             </View>
 
             {user ?
                 <View className="flex-row items-center gap-4">
                     <TouchableOpacity className="" onPress={() => router.push("/notifications")}>
-                        <Ionicons name="notifications-outline" size={30} color="rgb(34 34 34)" />
+                        <Octicons name="bell" size={30} color="rgb(34 34 34)" />
                     </TouchableOpacity>
                     {/* <TouchableOpacity className="" onPress={() => router.navigate("/profile")}>
                         <Image
@@ -68,7 +68,7 @@ export function HomeHeader() {
                         <Text className=' text-[#222222] font-bold text-lg'>
                             Login
                         </Text>
-                        <Feather name="log-in" size={30} color="rgb(34 34 34)" />
+                        <Octicons name="sign-in" size={30} color="rgb(34 34 34)" />
                     </Pressable>
                 </View>
             }
@@ -80,7 +80,7 @@ export function HomeHeader() {
 
 export function TitleHeader({ title }: { title: string }) {
     return (
-        <View className="flex-row items-center justify-center px-4 py-3 bg-transparent  rounded-lg mx-2 shadow-lg shadow-neutral-400">
+        <View className="flex-row items-center justify-center px-4 py-3 bg-transparent  rounded-lg mx-2  ">
             <Text className=' text-[#222222] font-bold text-lg'>
                 {title}
             </Text>

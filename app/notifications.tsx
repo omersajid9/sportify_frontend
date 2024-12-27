@@ -31,7 +31,7 @@ export default function Notifications() {
 
   if (!user) {
     return <AuthWall />
-}
+  }
 
   return (
     <View className='h-full p-4 '>
@@ -67,12 +67,12 @@ interface NotificationCardProps {
   message: String;
   game_type: String;
 }
-function NotificationCard({ message, game_type}: NotificationCardProps) {
+function NotificationCard({ message, game_type }: NotificationCardProps) {
   return (
     <View className="bg-white p-4 mb-2 rounded-lg shadow-sm flex-row items-center gap-2 w-full">
       <NotificationIcon game_type={game_type} />
       <View className=' w-max flex-1'>
-      <Text className="  text-gray-900 text-wrap">{message}</Text>
+        <Text className="  text-gray-900 text-wrap">{message}</Text>
       </View>
     </View>
   )
@@ -83,7 +83,6 @@ interface NotificationIconProps {
   game_type: String;
 }
 function NotificationIcon({ game_type }: NotificationIconProps) {
-  // console.log(game_type)
   if (game_type == "game") {
     return (
       <MaterialIcons name="scoreboard" size={24} color="rgb(34 34 34)" />

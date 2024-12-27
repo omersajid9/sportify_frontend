@@ -3,6 +3,7 @@ import { getValueFor, save } from '../app/context/store';
 import { BASE_URL } from '../app.config';
 import { router } from 'expo-router';
 import eventEmitter from './eventEmitter';
+import { SheetManager } from 'react-native-actions-sheet';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
@@ -27,20 +28,17 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log(error.response.status)
-    console.log("E", error.response.statusText)
+    console.log("error", error)
     if (error.response?.status === 401) {
-      // if (error.response?.statusText == undefined) {
-      //   eventEmitter.emit('log-out');
-      //   console.log("LOGGING")
-      // } else {
-        console.log("REFRESHING")
         eventEmitter.emit('refresh-token');
         const originalRequest = error.config;
         return axiosInstance(originalRequest);
       // }
+    } else if (error.response?.status === 400) {
+
+    } else if (error.response?.status === 404) {
+      await eventEmitter.emit('log-out');
     }
-    console.log("HEHERE")
   }
 );
 

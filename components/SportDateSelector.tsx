@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useMemo } from 'react';
-import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
+import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator, GestureResponderEvent, Animated, TouchableWithoutFeedback } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
 import SportIcon from './SportIcon';
@@ -7,7 +7,6 @@ import axiosInstance from '../services/api';
 import Loader from './Loader';
 import ErrorBanner from './ErrorBanner';
 import { FlashList } from '@shopify/flash-list';
-import { MotiView } from 'moti';
 
 interface SportDateSelectorProps {
   selectedSport: string;
@@ -48,10 +47,6 @@ export default function SportDateSelector({ selectedSport, setSelectedSport, sel
     }
   }, [sports]);
 
-  //   const dates = useMemo(() => {
-  //     return generateDatesAndDays();
-  //  }, [])
-
   if (isLoading) {
     return <Loader />;
   }
@@ -66,8 +61,6 @@ export default function SportDateSelector({ selectedSport, setSelectedSport, sel
     const result = [];
 
     result.push({ date: "All", day: "All" })
-
-
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
 
@@ -84,101 +77,53 @@ export default function SportDateSelector({ selectedSport, setSelectedSport, sel
     return result;
   }
 
-  // const a = memo()
-
   const dates = generateDatesAndDays()
 
 
   return (
-    <View className="px-4 py-1 flex gap-1 min-h-36">
+    <View className="px-4 py-1 flex gap-1 h-[120px]  ">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="flex-row bg-transparent"
+        className="flex-row bg-transparent h-1/2"
       >
-        {/* {dates.map((item, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() => setSelectedDate(item.date.toString())}
-        >
-          <MotiView
-            style={{
-              backgroundColor: selectedDate === item.date ? '#222222' : '#e0e0e0', // Light gray
-              margin: 4,
-            }}
-            animate={{
-              scale: selectedDate === item.date ? 1.1 : 1,
-              opacity: selectedDate === item.date ? 1 : 0.6,
-            }}
-            transition={{
-              type: 'spring',
-              damping: 15,
-              stiffness: 150,
-            }}
-            className="flex-grow items-center justify-center px-4 py-3 rounded-lg shadow-sm"
-          >
-            <Text
-              className={`font-semibold ${selectedDate === item.date ? 'text-[#F2F2F2]' : 'text-[#222222]'
-                }`}
-            >
-              {item.day}
-            </Text>
-            {item.date !== 'All' && (
-              <Text
-                className={` ${selectedDate === item.date ? 'text-[#F2F2F2]' : 'text-[#222222]'
-                  }`}
-              >
-                {item.date === new Date().toDateString() ? "Today" : formatDateString(item.date)}
-              </Text>
-            )}
-          </MotiView>
-        </TouchableOpacity>
-      ))} */}
         <FlashList
           data={dates}
           horizontal
-          // className='py-1'
           estimatedItemSize={50}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
-            <TouchableOpacity
+            <ScaleTouchable
               key={index}
-              className={`flex-grow justify-center items-center px-4 mx-1 py-2 rounded-lg ${selectedDate === item.date ? 'bg-[#222222]' : 'bg-[#e0e0e0]'
-                }`}
-              onPress={() => setSelectedDate(item.date.toString())}
-            >
-              {/* <MotiView
-                style={{
-                  backgroundColor: selectedDate === item.date ? '#222222' : '#e0e0e0', // Light gray
-                  margin: 4
-                }}
-                animate={{
-                  scale: selectedDate === item.date ? 1.1 : 1,
-                  opacity: selectedDate === item.date ? 1 : 0.6,
-                }}
-                transition={{
-                  type: 'spring',
-                  damping: 15,
-                  stiffness: 150,
-                }}
-                className=" flex-grow items-center justify-center px-4 py-3 rounded-lg shadow-sm"
-              > */}
-              <Text
-                className={`font-semibold ${selectedDate === item.date ? 'text-[#F2F2F2]' : 'text-[#222222]'
-                  }`}
-              >
-                {item.day}
-              </Text>
-              {item.date != 'All' &&
-                <Text
-                  className={` ${selectedDate === item.date ? 'text-[#F2F2F2]' : 'text-[#222222]'
-                    }`}
-                >
-                  {item.date === new Date().toDateString() ? "Today" : formatDateString(item.date)}
-                </Text>
+              className={
+                `flex-grow justify-center items-center px-4 m-1 py-1 rounded-lg ${selectedDate === item.date ? 'bg-[#222222]' : 'bg-[#e0e0e0]'}`
               }
-              {/* </MotiView> */}
-            </TouchableOpacity>
+              onPress={() => setSelectedDate(item.date.toString())}
+              selectedVal={selectedDate}
+              val={item.date}
+            >
+              <>
+                <Text
+                  className={
+                    `font-semibold ${selectedDate === item.date ? 'text-[#F2F2F2]' : 'text-[#222222]'}`
+                  }
+
+                >
+                  {item.day}
+                </Text>
+                {item.date !== 'All' && (
+                  <Text
+                    className={
+                      `font-semibold ${selectedDate === item.date ? 'text-[#F2F2F2]' : 'text-[#222222]'}`
+                    }
+                  >
+                    {item.date === new Date().toDateString()
+                      ? 'Today'
+                      : formatDateString(item.date)}
+                  </Text>
+                )}
+              </>
+            </ScaleTouchable>
           )}
         />
 
@@ -187,72 +132,22 @@ export default function SportDateSelector({ selectedSport, setSelectedSport, sel
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="flex-row bg-transparent"
+        className="flex-row bg-transparent h-1/2"
       >
-        {/* {sports.map((sport: any, index: number) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() => setSelectedSport(sport.key)}
-        >
-          <MotiView
-            style={{
-              backgroundColor: selectedSport === sport.key ? '#222222' : '#e0e0e0', // Light gray
-              margin: 4,
-              paddingVertical: 9
-            }}
-            animate={{
-              scale: selectedSport === sport.key ? 1.1 : 1,
-              opacity: selectedSport === sport.key ? 1 : 0.6,
-            }}
-            transition={{
-              type: 'spring',
-              damping: 15,
-              stiffness: 150,
-            }}
-            className="flex-row gap-2 items-center justify-center px-4 rounded-lg shadow-sm"
-          >
-            <SportIcon
-              sport_icon={sport.icon}
-              size={20}
-              sport_icon_source={sport.icon_source}
-              color={selectedSport === sport.key ? '#F2F2F2' : '#222222'}
-            />
-            <Text
-              className={`font-semibold ${selectedSport === sport.key ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}
-            >
-              {sport.name}
-            </Text>
-          </MotiView>
-        </TouchableOpacity>
-      ))} */}
         <FlashList
           data={sports}
           horizontal
           estimatedItemSize={30}
           showsHorizontalScrollIndicator={false}
           renderItem={(item: any) => (
-            <TouchableOpacity
+            <ScaleTouchable
               key={item.item.key}
-              className={` flex-row flex-grow  gap-2 items-center justify-center mx-1 px-4 py-3 rounded-lg   ${selectedSport === item.item.key ? ' bg-[#222222]' : 'bg-[#e0e0e0]'
+              className={` flex-row   gap-2 items-center justify-center m-1 mx-1.5 px-4 py-3 rounded-lg   ${selectedSport === item.item.key ? ' bg-[#222222]' : 'bg-[#e0e0e0]'
                 }`}
               onPress={() => setSelectedSport(item.item.key)}
+              selectedVal={selectedSport}
+              val={item.item.key}
             >
-              {/* <MotiView
-                style={{
-                  backgroundColor: selectedSport === item.item.key ? '#222222' : '#e0e0e0', // Light gray
-                  margin: 4
-                }}
-                animate={{
-                  scale: selectedSport === item.item.key ? 1.1 : 1,
-                  opacity: selectedSport === item.item.key ? 1 : 0.6,
-                }}
-                transition={{
-                  type: 'spring',
-                  damping: 15,
-                  stiffness: 150,
-                }}
-                className="flex-row gap-2 items-center justify-center px-4 py-3 rounded-lg shadow-sm"
-              > */}
               <SportIcon
                 sport_icon={item.item.icon}
                 size={20}
@@ -264,8 +159,8 @@ export default function SportDateSelector({ selectedSport, setSelectedSport, sel
               >
                 {item.item.name}
               </Text>
-              {/* </MotiView> */}
-            </TouchableOpacity>
+            </ScaleTouchable>
+
           )}
         />
       </ScrollView>
@@ -274,3 +169,55 @@ export default function SportDateSelector({ selectedSport, setSelectedSport, sel
     </View>
   );
 }
+
+
+
+interface ScaleTouchableProps {
+  children: React.ReactNode;
+  onPress?: (event: GestureResponderEvent) => void;
+  scaleTo?: number;
+  className?: string;
+  val: string;
+  selectedVal: String | Date;
+}
+
+export const ScaleTouchable: React.FC<ScaleTouchableProps> = ({
+  val,
+  selectedVal,
+  children,
+  onPress,
+  scaleTo = 1.1,
+  className = '',
+}) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(0.6)).current;
+
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: val === selectedVal ? scaleTo : 1,
+      damping: 15,
+      stiffness: 150,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(opacityAnim, {
+      toValue: val === selectedVal ? 1 : 0.6,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [val, selectedVal, scaleTo]);
+
+
+  return (
+    <TouchableWithoutFeedback
+      onPress={onPress}
+    >
+      <Animated.View
+        style={[{ transform: [{ scale: scaleAnim }], opacity: opacityAnim }]}
+        className={className}
+      >
+        {children}
+      </Animated.View>
+    </TouchableWithoutFeedback>
+  );
+};

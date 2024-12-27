@@ -2,7 +2,6 @@ import { View, Text, Pressable, Linking } from 'react-native';
 import React, { useMemo, useState } from 'react';
 import SignIn from './(auth)/sign-in';
 import SignUp from './(auth)/sign-up';
-import Moti, { MotiText, MotiView } from 'moti'
 import Apple from '../ExternalAuth/apple';
 
 
@@ -36,29 +35,6 @@ export default function AuthPage() {
                     </Pressable>
                 </View>
 
-                <View className='flex py-10'>
-                    {signinpage ? (
-                        <MotiView
-                            // from={{ opacity: 0, scale: 0.8 }}
-                            // animate={{ opacity: 1, scale: 1 }}
-                            from={{ opacity: 0.5 }}
-                            animate={{ opacity: 1 }}
-                            key="signup"
-                            className='flex'
-                        >
-                            <SignUp />
-                        </MotiView>
-                    ) : (
-                        <MotiView
-                            from={{ opacity: 0.5 }}
-                            animate={{ opacity: 1 }}
-                            key="signin"
-                            className='flex'
-                        >
-                            <SignIn />
-                        </MotiView>
-                    )}
-                </View>
             </View>
         </View>
     );

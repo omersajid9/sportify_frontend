@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Pressable } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../context/auth';
@@ -8,6 +8,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from '../../services/api';
 import Loader from '../../components/Loader';
 import AuthWall from '../../components/AuthWall';
+import {Linking, Platform} from 'react-native';
 
 const getSession = (id: String, location: {lat: number, lng: number}) => {
   return useQuery({
@@ -52,6 +53,24 @@ const formatDate = (date1: Date, date2: Date): string => {
   }
 };
 
+export type OpenMapArgs = {
+  lat: string | number;
+  lng: string | number;
+  label: string;
+};
+
+const openMap = ({lat, lng, label}: OpenMapArgs) => {
+  const scheme = Platform.select({
+    ios: `maps://?q=${label}&ll=${lat},${lng}`,
+    android: `geo:${lat},${lng}?q=${lat},${lng}(${label})`,
+  });
+
+  if (scheme) {
+    Linking.openURL(scheme).catch(err =>
+      console.error('Error opening map: ', err),
+    );
+  }
+};
 
 export default function joinSession() {
   const queryClient = useQueryClient();
@@ -75,8 +94,6 @@ export default function joinSession() {
       player_user_id: user.id,
       player_rsvp: rsvp
     }
-
-    console.log('data', data)
 
     try {
       const response = await axiosInstance.post('/session/rsvp', data, {
@@ -138,6 +155,11 @@ export default function joinSession() {
           <FontAwesome name="map-marker" size={14} color="gray" /> {session.location_name} ~ {(session.dis / 1609.34).toPrecision(1)} miles
         </Text>
       </View>
+      <View>
+        <Pressable className='mb-4' onPress={() => openMap({lat: session.lat, lng: session.lon, label: session.location_name})}>
+          <Text className="text-blue-500">Open in Maps</Text>
+        </Pressable>
+      </View>
 
 
       {otherUsernames.length > 0 &&
@@ -160,9 +182,9 @@ export default function joinSession() {
           </TouchableOpacity>
         </View>
       }
-      {!user &&
-        <AuthWall />
-      }
+      {/* {!user &&
+        // <AuthWall />
+      } */}
 
 
 

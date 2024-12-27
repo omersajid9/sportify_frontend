@@ -2,7 +2,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, TouchableWithoutFeedback, Keyboard, Alert, Platform, ScrollView, Pressable } from 'react-native';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useAuth } from './context/auth';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import TeamPicker from '../components/TeamPicker';
@@ -22,9 +22,7 @@ const getUpcomingSessions = (user_id: string | undefined) => useQuery({
 const getUsernames = (id: string | undefined) => useQuery({
   queryKey: ['rsvp', 'usernames', id],
   queryFn: async () => {
-    console.log(id)
     const response = await axiosInstance.get('/session/players', { params: { session_id: id } });
-    console.log(response)
     return response.data.data.players;
   },
   enabled: !!id
@@ -62,9 +60,6 @@ export default function ReportScore() {
   const { data: sessions, isLoading: sessionsLoading, error: sessionsError, refetch: refetchSession } = getUpcomingSessions(user?.id);
   const { data: usernames, isLoading: usernameLoading, error: usernameError, refetch: refetchUsername } = getUsernames(session?.id);
 
-  // array1.findLast((element) => element > 45)
-  console.log(usernames, usernameError)
-
   if (sessionsLoading || usernameLoading) {
     return <Loader />;
   }
@@ -74,12 +69,10 @@ export default function ReportScore() {
   }
 
 
+  if (user && session && !team1Users.find((u) => u.id === user.id)) {
+    team1Users.push({ id: user?.id, username: user?.username, profile_picture: user?.profile_picture })
+  }
 
-
-
-  // if (user && session && !team1Users.includes(user.username)) {
-  //   team1Usernames.push(user.username);
-  // }
 
 
   // filter out users from team1 and team2
@@ -135,7 +128,7 @@ export default function ReportScore() {
       const response = await axiosInstance.post('/game/report', gameSubmit, {
         headers: { 'Content-Type': 'application/json' },
       });
-      router.navigate("/");
+      router.dismissAll()
     } catch (error) {
       console.error('Error creating session:', error);
     }
@@ -169,18 +162,32 @@ export default function ReportScore() {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView>
 
-        <View className="flex-1 items-center p-6 h-full">
+      <View className="flex-1  p-6 h-full bg-[#F2F2F2]">
+        <Stack.Screen
+          options={{
+            headerRight: () => <Pressable className=' px-4 bg-transparent rounded-lg w-min' onPress={handleSubmit}>
+              <Text className=' text-[#222222] font-bold w-min' >Report</Text>
+            </Pressable>,
+            headerStyle: { backgroundColor: '#F2F2F2' },
+            headerShadowVisible: false,
+            headerTintColor: '#222222',
+          }}
+        />
 
-          <View className=' flex-row py-2 px-2 justify-between shadow-sm'>
-            <TouchableOpacity
-              className="flex flex-row justify-between items-center bg-[#e0e0e0] px-4 py-3 rounded-lg w-full"
-              onPress={onSessionPress}
-            >
-              <Text className="text-center">{session ? session.session_name : "Select Session"}</Text>
-              <Entypo name="chevron-down" size={24} color="black" />
-            </TouchableOpacity>
+        <View className='flex-col gap-4'>
+
+          <View className=' flex-col gap-2'>
+            <Text className='text-lg px-2 font-semibold'>Select Session</Text>
+            <View className=' flex-row px-2 justify-between shadow-sm'>
+              <TouchableOpacity
+                className="flex flex-row justify-between items-center bg-[#F2F2F2] border-2 border-[#222222] shadow-sm px-4 py-3 rounded-lg w-full"
+                onPress={onSessionPress}
+              >
+                <Text className="text-center">{session ? session.session_name : "Select Session"}</Text>
+                <Entypo name="chevron-down" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {Platform.OS == 'ios' ?
@@ -216,52 +223,63 @@ export default function ReportScore() {
             </Picker>}
 
 
-          <View className="my-6 w-full">
-            <Text className="text-lg font-bold text-center">Scoreboard</Text>
-          </View>
+          <View className=' flex-col gap-2'>
+            <Text className='text-lg px-2 font-semibold'>Set Teams</Text>
+            <View className='flex-row'>
+              <TeamPicker
+                remainingPlayers={otherUsers}
+                selectedPlayers={team1Users}
+                toggleMember={toggleTeam1}
+                placeholder={"Select Friend"}
+              />
+              <TeamPicker
+                remainingPlayers={otherUsers}
+                selectedPlayers={team2Users}
+                toggleMember={toggleTeam2}
+                placeholder={"Select Opponent"}
+              />
+            </View>
 
-          <View className='flex-row'>
-            <TeamPicker
-              remainingPlayers={otherUsers}
-              selectedPlayers={team1Users}
-              toggleMember={toggleTeam1}
-              placeholder={"Select friend"}
-            />
-            <TeamPicker
-              remainingPlayers={otherUsers}
-              selectedPlayers={team2Users}
-              toggleMember={toggleTeam2}
-              placeholder={"Select opponent"}
-            />
           </View>
+          {/* </View> */}
 
-          <View className='py-6 w-full'>
-            {scores.map((score, index) => (
-              <View key={index} className="flex-row justify-evenly items-center w-full mb-4">
-                <TextInput
-                  className="bg-[#e0e0e0] rounded-lg p-2 h-16 w-14 text-center text-2xl shadow-sm"
-                  keyboardType="numeric"
-                  value={score.team1}
-                  onChangeText={value => handleScoreChange(index, 'team1', value)}
-                />
-                <TextInput
-                  className="bg-[#e0e0e0] rounded-lg p-2 h-16 w-14 text-center text-2xl shadow-sm"
-                  keyboardType="numeric"
-                  value={score.team2}
-                  onChangeText={value => handleScoreChange(index, 'team2', value)}
-                />
+          <View className='flex-col gap-3'>
+            <Text className='text-lg px-2 font-semibold'>Scoreboard</Text>
+            <ScrollView className=' max-h-64' overScrollMode='always'>
+              <View className='flex-col gap-4 w-full h-fit'>
+
+                {scores.map((score, index) => (
+                  <View key={index} className="flex-row justify-evenly items-center w-full">
+                    <TextInput
+                      className="bg-[#F2F2F2] rounded-lg p-1 h-16 w-16 border-2 border-[#222222] text-center  shadow-sm"
+                      style={{ fontSize: 24}}
+                      keyboardType="numeric"
+                      value={score.team1}
+                      onChangeText={value => handleScoreChange(index, 'team1', value)}
+                    />
+                    <TextInput
+                      className="bg-[#F2F2F2] rounded-lg p-1 h-16 w-16 border-2 border-[#222222] text-center  shadow-sm"
+                      style={{ fontSize: 24}}
+                      keyboardType="numeric"
+                      value={score.team2}
+                      onChangeText={value => handleScoreChange(index, 'team2', value)}
+                    />
+                  </View>
+                ))}
               </View>
-            ))}
+            </ScrollView>
           </View>
 
-          <View className=' justify-center items-center p-10'>
+
+
+          {/* <View className=' justify-center items-center p-10'>
             <Pressable className=' p-4 bg-[#222222] rounded-lg w-min' onPress={handleSubmit}>
               <Text className=' text-white font-bold w-min' >Report</Text>
             </Pressable>
-          </View>
-
+          </View> */}
         </View>
-      </ScrollView>
+
+      </View>
     </TouchableWithoutFeedback>
   );
 }

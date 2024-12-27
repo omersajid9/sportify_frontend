@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '../context/auth';
 import axiosInstance from '../../services/api';
 import Entypo from '@expo/vector-icons/Entypo';
+import SportIcon from '../../components/SportIcon';
 
 
 const getGame = (game_id: string) => {
@@ -70,7 +71,6 @@ export default function Game() {
       user_id: user?.id,
       confirmation: confirmation
     }
-    console.log(data)
     try {
       const response = await axiosInstance.post('/game/confirm', data, {
         headers: {
@@ -78,7 +78,6 @@ export default function Game() {
         }
       });
       if (response.status == 200) {
-        // console.log(response.statusText)
         queryClient.invalidateQueries({ queryKey: ['user_profile'] });
         router.navigate("/profile")
       }
@@ -92,11 +91,25 @@ export default function Game() {
   return (
     <View className="bg-white rounded-lg shadow p-4 m-2 ">
       <View className="flex-row  justify-between p-2">
-        <Text className="text-sm px-2 py-1">Created at {(new Date(game.created_at)).toDateString()}</Text>
+
+      <View className=' flex flex-row items-center'>
+          <SportIcon
+            sport_icon={game.sport.icon}
+            size={16}
+            sport_icon_source={game.sport.icon_source}
+            color={'rgb(34 34 34)'} />
+          <Text className="ml-2 text-base font-bold text-gray-600">{game.sport.name}</Text>
+
+          <Text className="text-sm text-gray-500 ml-2">
+            {new Date(game.created_at).toDateString()}
+          </Text>
+        </View>
+
+        {/* <Text className="text-sm px-2 py-1">Created at {(new Date(game.created_at)).toDateString()}</Text> */}
         {game.status == 'Pending' ?
-          <View className='rounded-lg bg-yellow-300 px-2 py-1 w-auto'><Text className="text-sm ">Pending Validation</Text></View> :
-          game.status == 'Yes' ? <View className='rounded-lg bg-green-300 px-2 py-1 w-auto'><Text className="text-sm ">Validated</Text></View> :
-            <View className='rounded-lg bg-red-300 px-2 py-1 w-auto'><Text className="text-sm ">Rejected by {game.username_2}</Text></View>}
+          <View className='rounded-lg bg-yellow-100 px-2 py-1 w-auto'><Text className="text-sm ">Pending</Text></View> :
+          game.status == 'Yes' ? <View className='rounded-lg bg-green-100 px-2 py-1 w-auto'><Text className="text-sm ">Validated</Text></View> :
+            <View className='rounded-lg bg-red-100 px-2 py-1 w-auto'><Text className="text-sm ">Rejected</Text></View>}
       </View>
 
       <GameCard game={game} />
@@ -115,14 +128,14 @@ export default function Game() {
 
       <TouchableOpacity
         onPress={toggleUsernames}
-        className="flex-row mx-auto px-4 items-center justify-center bg-[#222222] mt-4 py-2 rounded-lg"
+        className="flex-row mx-auto px-4 items-center justify-center bg-[#F2F2F2] mt-4 py-2 rounded-lg"
       >
         <Entypo
           name={showUsernames ? 'chevron-up' : 'chevron-down'}
           size={24}
-          color="#F2F2F2"
+          color="#222222"
         />
-        <Text className="ml-2 text-center text-[#F2F2F2] font-medium">
+        <Text className="ml-2 text-center text-[#222222] font-medium">
           {showUsernames ? 'Hide Usernames' : 'Show Usernames'}
         </Text>
       </TouchableOpacity>
@@ -234,9 +247,6 @@ interface ProfileCardProps {
 // }
 
 function GameCard({ game }: GameResultViewProps) {
-
-  console.log(game)
-
   const renderUserProfilePictures = (players: Player[], side: string) =>
     players.map((player, index) => (
           <Image

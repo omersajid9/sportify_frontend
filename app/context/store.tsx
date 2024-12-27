@@ -34,7 +34,6 @@ export async function getValueFor(key: string) {
         if (result === null) {
           return null;
         }
-        console.log('result ', result)
     
         return result;
       } catch (error) {
@@ -50,7 +49,6 @@ export async function getJsonValueFor(key: string) {
         if (result === null) {
           return null;
         }
-        console.log('json result ', result)
     
         // Parse the JSON string back to its original form
         return JSON.parse(result);

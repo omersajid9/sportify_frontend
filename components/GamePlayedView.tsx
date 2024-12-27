@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Entypo from '@expo/vector-icons/Entypo';
+import SportIcon from './SportIcon';
 
 interface Player {
   id: string;
@@ -14,6 +15,12 @@ interface Score {
   score_2: number;
 }
 
+interface Sport {
+  icon: string;
+  icon_source: string;
+  name: string;
+}
+
 interface GameResultViewProps {
   game: {
     id: string;
@@ -22,6 +29,7 @@ interface GameResultViewProps {
     team_1_users: Player[];
     team_2_users: Player[];
     scores: Score[];
+    sport: Sport
   };
 }
 
@@ -51,16 +59,16 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
 
   const renderUserProfilePictures = (players: Player[], side: string) =>
     players.map((player, index) => (
-          <Image
-            key={player.id}
-            source={{ uri: player.profile_picture }}
-            className=' border-2 border-[#222222] rounded-full w-14 h-14 -mx-2 shadow-sm'
-            style={{zIndex: index * (side == 'left' ? -1: 1)}}
-            // style={{right: 40 * index}}
-            // className={`rounded-full border-2 border-[#222222] absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
-            accessible
-            accessibilityLabel={`Profile picture of ${player.username}`}
-          />
+      <Image
+        key={player.id}
+        source={{ uri: player.profile_picture }}
+        className=' border-2 border-[#222222] rounded-full w-14 h-14 -mx-2 shadow-sm'
+        style={{ zIndex: index * (side == 'left' ? -1 : 1) }}
+        // style={{right: 40 * index}}
+        // className={`rounded-full border-2 border-[#222222] absolute m-5 bg-green-300 ${index == (side == 'left' ? 0 : players.length - 1) ? 'w-14 h-14 ' : 'w-14 h-14 '}`}
+        accessible
+        accessibilityLabel={`Profile picture of ${player.username}`}
+      />
     ));
 
   const renderScores = () => (
@@ -77,19 +85,40 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
     </>
   );
 
+
   return (
     <View className="bg-white rounded-lg shadow-sm p-4 my-2">
       {/* Top Section */}
       <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-sm text-gray-500">
-          {new Date(game.created_at).toDateString()}
-        </Text>
-        <View className={`rounded-lg px-3 py-1 ${getStatusStyle()}`}>
-          <Text className="text-sm font-medium capitalize">
-            {game.status === 'Yes' ? 'Validated' : game.status}
+
+        <View className=' flex flex-row items-center'>
+          <SportIcon
+            sport_icon={game.sport.icon}
+            size={16}
+            sport_icon_source={game.sport.icon_source}
+            color={'rgb(34 34 34)'} />
+          <Text className="ml-2 text-base font-bold text-gray-600">{game.sport.name}</Text>
+
+          <Text className="text-sm text-gray-500 ml-2">
+            {new Date(game.created_at).toDateString()}
           </Text>
         </View>
+
+        {game.status == 'Pending' ?
+          <View className='rounded-lg bg-yellow-100 px-2 py-1 w-auto'><Text className="text-sm ">Pending</Text></View> :
+          game.status == 'Yes' ? <View className='rounded-lg bg-green-100 px-2 py-1 w-auto'><Text className="text-sm ">Validated</Text></View> :
+            <View className='rounded-lg bg-red-100 px-2 py-1 w-auto'><Text className="text-sm ">Rejected</Text></View>}
       </View>
+
+      {/* <View className="flex-row items-center">
+          <SportIcon
+            sport_icon={game.sport.icon}
+            size={16}
+            sport_icon_source={game.sport.icon_source}
+            color={'rgb(34 34 34)'} />
+          <Text className="ml-2 text-gray-600">{game.sport.name}</Text>
+        </View> */}
+
 
       {/* Game Details */}
       <TouchableOpacity
@@ -106,14 +135,14 @@ const GameResultView: React.FC<GameResultViewProps> = ({ game }) => {
       {/* Show Usernames Button */}
       <TouchableOpacity
         onPress={toggleUsernames}
-        className="flex-row mx-auto px-4 items-center justify-center bg-[#222222] mt-4 py-2 rounded-lg"
+        className="flex-row mx-auto px-4 items-center justify-center bg-[#F2f2f2] mt-4 py-2 rounded-lg"
       >
         <Entypo
           name={showUsernames ? 'chevron-up' : 'chevron-down'}
           size={24}
-          color="#F2F2F2"
+          color="#222222"
         />
-        <Text className="ml-2 text-center text-[#F2F2F2] font-medium">
+        <Text className="ml-2 text-center text-[#222222] font-medium">
           {showUsernames ? 'Hide Usernames' : 'Show Usernames'}
         </Text>
       </TouchableOpacity>

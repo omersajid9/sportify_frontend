@@ -7,6 +7,7 @@ import { getJsonValueFor, getValueFor, save, saveJson } from "./store";
 import Location, { getCurrentPositionAsync, getLastKnownPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
 import axiosInstance from "../../services/api";
 import eventEmitter from "../../services/eventEmitter";
+import { SheetManager } from "react-native-actions-sheet";
 
 interface SignInResponse {
   data?: string;
@@ -50,7 +51,7 @@ interface SignOutResponse {
 
 interface AuthContextValue {
   sendOptSMS: (phone: String) => Promise<OptSMSResponse>,
-  logIn: (auth_type: String, auth_id: String, passcode?: String) => Promise<LogInResponse>,
+  logIn: (auth_type: String, auth_id: String, passcode?: String, first_name?: String, last_name?: String) => Promise<LogInResponse>,
   editProfile: (data: EditProfile) => Promise<any>,
   // signIn: (e: string, p: string) => Promise<SignInResponse>;
   // signUp: (username: string, password: string, profile_picture: string) => Promise<SignInResponse>;
@@ -100,38 +101,42 @@ export function Provider(props: ProviderProps) {
 
 
     useEffect(() => {
-      const inAuthGroup = segments[0] === "(tabs)";
-      if (!authInitialized) return;
+      const f = async () => {
+
+        const inAuthGroup = segments[0] === "(tabs)" || segments[0] === 'joinSession';
+        if (!authInitialized) return;
+        // router.replace("onboarding")
+  
+        if (!user && !inAuthGroup) {
+          router.dismissAll()
+          SheetManager.show("authsheet")
+        }
+        else if (user && inAuthGroup) {
+          await SheetManager.hide("authsheet");
+        } 
+      }
+      f();
+
 
       const handleRefershToken = async () => {
-        console.log("handle refresh")
-        await refreshToken(); // Call logout when the event is emitted
+        // console.log("refresh-token")
+        await refreshToken();
+        return true
       };
+
       const handleLogout = async () => {
-        console.log("handle logout")
-        await logout(true); // Call logout when the event is emitted
+        // console.log("log-out")
+        await logout(true);
       };
 
-      if (!user && !inAuthGroup) {
-        router.navigate("/")
-      }
-      // router.replace('/onboarding');
 
-  
       eventEmitter.on('log-out', handleLogout);
       eventEmitter.on('refresh-token', handleRefershToken);
       return () => {
         eventEmitter.off('refresh-token', handleRefershToken);
+        eventEmitter.off('log-out', handleLogout);
       };
 
-      // if (
-      //   !user &&
-      //   !inAuthGroup
-      // ) {
-      //   router.navigate('/sign-in');
-      // } else if (user && inAuthGroup) {
-      // }
-      // router.navigate("/");
     }, [user, segments, authInitialized]);
   };
 
@@ -205,7 +210,7 @@ export function Provider(props: ProviderProps) {
           }
         });
         if (response.status == 200) {
-          console.log("SUCCESS")
+
         }
       } catch (error) {
         console.error('Error saving notification token:', error);
@@ -255,13 +260,12 @@ export function Provider(props: ProviderProps) {
     }
   }
   const login = async (
-    auth_type: String, auth_id: String, passcode?: String
+    auth_type: String, auth_id: String, passcode?: String, first_name?: String, last_name?: String
   ): Promise<LogInResponse> => {
     try {
-      const response = await axios.post(BASE_URL + '/auth/log-in', { auth_type: auth_type.toLowerCase(), auth_id: auth_id, passcode: passcode });
+      const response = await axios.post(BASE_URL + '/auth/log-in', { auth_type: auth_type.toLowerCase(), auth_id: auth_id, passcode: passcode, first_name: first_name, last_name: last_name });
       if (response.status === 200) {
         const user = response.data.profile.user;
-        console.log("User", user)
         await save("auth_token", response.data.auth_token.token);
         setAuth(user);
         await saveJson("user", user);
@@ -273,7 +277,6 @@ export function Provider(props: ProviderProps) {
         return { error: "Something went wrong with request", data: undefined };
       }
     } catch (error: any) {
-      console.log(error)
       await saveJson("user", null);
       await save("auth_token", null);
       if (error.response && error.response.status === 401) {
@@ -294,7 +297,6 @@ export function Provider(props: ProviderProps) {
       const response = await axiosInstance.patch('/player/edit', data, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(response.status)
       if (response.status == 200) {
         const user = response.data.user;
         setAuth(user);
@@ -304,7 +306,6 @@ export function Provider(props: ProviderProps) {
       }
       // await signOut(false);
     } catch (error: any) {
-      console.log(error)
       Alert.alert("Edit profile failed");
     }
 

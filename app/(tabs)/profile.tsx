@@ -12,6 +12,7 @@ export default function Profile() {
 
     return (
         <View className='flex-1 '>
+
             {/* <Stack.Screen
                 options={{
                     headerShown: true,

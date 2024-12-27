@@ -9,8 +9,8 @@ export default function Profile() {
 
     return (
         <View className='flex-1'>
-            <Stack.Screen options={{ title: "Profile View", headerShown: true }} />
-            <ProfilePage user={user} />
+            {/* <Stack.Screen options={{ title: "Profile View", headerShown: true }} /> */}
+            {/* <ProfilePage user={user} /> */}
         </View>
     )
 }

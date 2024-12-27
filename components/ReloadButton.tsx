@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 export default function ReloadButton(reload: any) {
 
   return (
-    <View className="absolute left-1/2 bottom-2 -translate-x-1/2 right-3 items-center justify-end pb-4 z-50">
+    <View className="absolute left-1/2 top-2 -translate-x-1/2 right-3 items-center justify-end pb-4 z-50">
       {/* Circular Button */}
       <TouchableOpacity
         className="px-4 py-2 rounded-2xl bg-[#EAEAEA] items-center justify-center shadow-lg"

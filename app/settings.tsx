@@ -4,6 +4,7 @@ import { useAuth } from './context/auth';
 import axiosInstance from '../services/api';
 import { router } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
+import { Octicons } from '@expo/vector-icons';
 
 
 export default function Settings() {
@@ -52,15 +53,15 @@ export default function Settings() {
     return (
         <View className='flex-1 px-20 py-10 h-full gap-5'>
             <Pressable className=' gap-10 p-4 px-10 bg-green-100 rounded-lg shadow-sm flex flex-row items-center justify-between border-2 border-[#4ade80]' onPress={() => router.navigate("/updateProfile")}>
-                <Feather name="edit-2" size={24} color="#4ade80" />
-                <Text className=' text-lg font-semibold text-start w-full'>Edit Account</Text>
+                <Octicons name="pencil" size={24} color="#222222" />
+                <Text className=' text-lg font-semibold text-start w-full text-[#222222]'>Edit Account</Text>
             </Pressable>
             <Pressable className=' gap-10 p-4 px-10 bg-red-100 rounded-lg shadow-sm flex flex-row items-center justify-between border-2 border-[#f87171]' onPress={deleteAlert}>
-                <Feather name="trash" size={24} color="#f87171" />
-                <Text className=' text-lg font-semibold text-start w-full'>Delete Account</Text>
+                <Octicons name="trash" size={24} color="#222222" />
+                <Text className=' text-lg font-semibold text-start w-full text-[#222222]'>Delete Account</Text>
             </Pressable>
             <Pressable className=' gap-10 p-4 px-10 bg-white rounded-lg shadow-sm flex flex-row items-center justify-between ' onPress={logoutAlert}>
-                <Feather name="log-out" size={24} color="black" />
+                <Octicons name="sign-out" size={24} color="black" />
                 <Text className=' text-lg font-semibold text-start w-full'>Log out</Text>
             </Pressable>
         </View>

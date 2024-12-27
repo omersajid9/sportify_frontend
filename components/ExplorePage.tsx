@@ -1,6 +1,6 @@
 
 import { View, Text, RefreshControl, TouchableOpacity } from 'react-native';
-import SportDateSelector from './SportDateSelector';
+import SportDateSelector, { ScaleTouchable } from './SportDateSelector';
 import React, { useEffect, useState } from 'react';
 import GameView from './GameView';
 import { useQuery } from '@tanstack/react-query';
@@ -15,7 +15,7 @@ import { reverseGeocodeAsync } from 'expo-location';
 import axiosInstance from '../services/api';
 import Loader from './Loader';
 import ErrorBanner from './ErrorBanner';
-import { MotiView } from 'moti';
+import Feather from '@expo/vector-icons/Feather';
 
 function formatDate(date: Date) {
     if (isNaN(date.getTime())) {
@@ -160,60 +160,32 @@ export default function ExplorePage() {
                 setFetchingSports={setFetchingSports}
             />
 
-            <View className='flex-row justify-between my-1'>
-                <View className='flex-1 bg-[#e0e0e0] shadow-sm rounded-lg mx-4 align-middle' >
+            <View className='flex-row justify-between mb-2 h-10'>
+                <View className='flex flex-grow bg-[#F2F2F2] shadow-sm rounded-lg mx-4 align-middle border-2 border-[#222222] ' >
                     <GoogleSearchPlaces setPredictions={setPredictions} query={query} setQuery={setQuery} placeholder={queryPlaceholder} refreshLocation={getCurrentLocation} />
                 </View>
-                <View className="flex-row gap-1 items-center justify-center mr-2">
-                    <TouchableOpacity
-                        className={`px-4 py-2 rounded-lg border-2 ${view === 'list' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
-                        }`}                
+                <View className="flex-row gap-1 items-center justify-center mr-4">
+                    <ScaleTouchable
+                        className={`px-4 py-1 rounded-lg h-full items-center justify-center ${view === 'list' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
+                            }`}
                         onPress={() => setView('list')}
+                        selectedVal={view}
+                        val={'list'}
                     >
-                        {/* <MotiView
-                            style={{
-                                backgroundColor: view === 'list' ? '#222222' : '#e0e0e0', // Light gray
-                                marginHorizontal: 3
-                            }}
-                            animate={{
-                                scale: view === 'list' ? 1.2 : 1,
-                                opacity: view === 'list' ? 1 : 0.6,
-                            }}
-                            transition={{
-                                type: 'spring',
-                                damping: 15,
-                                stiffness: 150,
-                            }}
-                            className="px-4 py-2 rounded-lg shadow-sm"
-                        > */}
-                            <Text className={`font-semibold ${view === 'list' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>List</Text>
-                        {/* </MotiView> */}
-                    </TouchableOpacity>
+                        <Feather name="list" size={24} color={view== 'list' ? '#F2F2F2' : "#222222"} />
+                        {/* <Text className={`font-semibold ${view === 'list' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>List</Text> */}
 
-                    <TouchableOpacity
-                        className={`px-4 py-2 rounded-lg border-2 ${view === 'map' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
+                    </ScaleTouchable>
+                    <ScaleTouchable
+                        className={`px-4 py-1 rounded-lg h-full items-center justify-center ${view === 'map' ? 'bg-[#222222] ' : 'bg-[#e0e0e0] '
                             }`}
                         onPress={() => setView('map')}
+                        selectedVal={view}
+                        val={'map'}
                     >
-                        {/* <MotiView
-                            style={{
-                                backgroundColor: view === 'map' ? '#222222' : '#e0e0e0', // Light gray
-                                marginHorizontal: 3
-                            }}
-                            animate={{
-                                scale: view === 'map' ? 1.2 : 1,
-                                opacity: view === 'map' ? 1 : 0.6,
-                            }}
-                            transition={{
-                                type: 'spring',
-                                damping: 15,
-                                stiffness: 150,
-                            }}
-                            className="px-4 py-2 rounded-lg shadow-sm"
-                        > */}
-                            <Text className={`font-semibold ${view === 'map' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>Map</Text>
-                        {/* </MotiView> */}
-                    </TouchableOpacity>
+                        <Feather name="map" size={24} color={view== 'map' ? '#F2F2F2' : "#222222"} />
+                        {/* <Text className={`font-semibold ${view === 'map' ? 'text-[#F2F2F2]' : 'text-[#222222]'}`}>Map</Text> */}
+                    </ScaleTouchable>
                 </View>
             </View>
 
@@ -242,6 +214,7 @@ export default function ExplorePage() {
                         :
                         view === 'list' ?
                             <FlashList
+                            className=' mx-4'
                                 // style={{ flex: 1 }}
                                 data={games}
                                 renderItem={(item: any) => <GameView key={item.id} gameData={item} explore={true} />}

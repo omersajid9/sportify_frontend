@@ -32,7 +32,7 @@ const OnboardingScreen: React.FC = () => {
 
   const handleFinish = () => {
     // Navigate to main app or login screen
-    console.log('Onboarding complete');
+    // console.log('Onboarding complete');
   };
 
   const {uri} = Image.resolveAssetSource(require('../assets/1.svg'))

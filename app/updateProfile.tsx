@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert, Pressable } from 'react-native';
 // import { useAuth } from '../context/auth';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from './context/auth';
 import axiosInstance from '../services/api';
 
 const UpdateProfile = () => {
-      const { user, editProfile } = useAuth();
+    const { user, editProfile } = useAuth();
     const router = useRouter();
 
     const [username, setUsername] = useState<string>(user?.username ?? '');
@@ -40,88 +40,103 @@ const UpdateProfile = () => {
         };
 
         editProfile(data);
-      router.navigate("/profile");
-};
+        router.dismissAll();
+    };
 
-return (
-    <View className="justify-center items-center my-4">
-        <View className="mb-4 w-3/4">
-            <Text className="text-lg mb-2 text-[#222222]">Username</Text>
-            <TextInput
-                placeholderTextColor={'grey'}
-                placeholder="Update Username"
-                autoCapitalize="none"
-                nativeID="userName"
-                value={username}
-                onChangeText={setUsername}
-                className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
-                />
-        </View>
 
-        <View className="mb-4 w-3/4">
-            <Text className="text-lg mb-2 text-[#222222]">Password (Optional)</Text>
-            <TextInput
-                placeholderTextColor={'grey'}
-                placeholder="Update Password"
-                secureTextEntry={true}
-                nativeID="password"
-                onChangeText={setPassword}
-                className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
-                />
-        </View>
+    return (
 
-        <View className="mb-4 w-3/4">
-            <Text className="text-lg mb-2 text-[#222222]">Profile Picture</Text>
-            <FlashList
-                estimatedItemSize={50}
-                data={avatars}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <View>
-                        <TouchableOpacity onPress={() => setSelectedAvatar(convertToImageUrl(item))}>
-                            <Image
-                                source={{ uri: convertToImageUrl(item) }}
-                                style={{
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 30,
-                                    borderColor: selectedAvatar === convertToImageUrl(item) ? 'blue' : 'transparent',
-                                    borderWidth: 2,
-                                    margin: 5,
-                                }}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setSelectedAvatar(convertToImageUrl(item + 1))}>
-                            <Image
-                                source={{ uri: convertToImageUrl(item + 1) }}
-                                style={{
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 30,
-                                    borderColor: selectedAvatar === convertToImageUrl(item + 1) ? 'blue' : 'transparent',
-                                    borderWidth: 2,
-                                    margin: 5,
-                                }}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                )}
-                horizontal
-                showsHorizontalScrollIndicator={false}
+        <View className="justify-center items-center my-4">
+            <Stack.Screen
+                options={{
+                    headerRight: () => <Pressable className=' px-4 bg-transparent rounded-lg w-min' onPress={handleUpdate}>
+                        <Text className=' text-[#222222] font-bold w-min' >Update</Text>
+                    </Pressable>,
+                    headerStyle: { backgroundColor: '#F2F2F2' },
+                    headerShadowVisible: false,
+                    headerTintColor: '#222222',
+                }}
             />
-        </View>
 
-        <View className="mt-3 justify-center items-center">
-            <Pressable
-                className="p-4 bg-[#222222] rounded-lg"
-                onPress={handleUpdate}
-            >
-                <Text className="text-white font-bold">Update Profile</Text>
-            </Pressable>
-        </View>
+            <View className="mb-4 w-3/4">
+                <Text className="text-lg mb-2 text-[#222222]">Username</Text>
+                <TextInput
+                    placeholderTextColor={'grey'}
+                    placeholder="Update Username"
+                    autoCapitalize="none"
+                    nativeID="userName"
+                    value={username}
+                    onChangeText={setUsername}
+                    className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
+                />
+            </View>
 
-    </View>
-);
+            {user?.auth_type != 'apple' &&
+                <View className="mb-4 w-3/4">
+                    <Text className="text-lg mb-2 text-[#222222]">Password (Optional)</Text>
+                    <TextInput
+                        placeholderTextColor={'grey'}
+                        placeholder="Update Password"
+                        secureTextEntry={true}
+                        nativeID="password"
+                        onChangeText={setPassword}
+                        className="w-full py-3 border-2 border-[#222222] rounded-lg px-4 "
+                    />
+                </View>
+            }
+
+            <View className="mb-4 w-3/4">
+                <Text className="text-lg mb-2 text-[#222222]">Profile Picture</Text>
+                <FlashList
+                    estimatedItemSize={50}
+                    data={avatars}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <View>
+                            <TouchableOpacity onPress={() => setSelectedAvatar(convertToImageUrl(item))}>
+                                <Image
+                                    source={{ uri: convertToImageUrl(item) }}
+                                    style={{
+                                        width: 60,
+                                        height: 60,
+                                        borderRadius: 30,
+                                        borderColor: selectedAvatar === convertToImageUrl(item) ? 'blue' : 'transparent',
+                                        borderWidth: 2,
+                                        margin: 5,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setSelectedAvatar(convertToImageUrl(item + 1))}>
+                                <Image
+                                    source={{ uri: convertToImageUrl(item + 1) }}
+                                    style={{
+                                        width: 60,
+                                        height: 60,
+                                        borderRadius: 30,
+                                        borderColor: selectedAvatar === convertToImageUrl(item + 1) ? 'blue' : 'transparent',
+                                        borderWidth: 2,
+                                        margin: 5,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>
+
+            {/* <View className="mt-3 justify-center items-center">
+                <Pressable
+                    className="p-4 bg-[#222222] rounded-lg"
+                    onPress={handleUpdate}
+                >
+                    <Text className="text-white font-bold">Update Profile</Text>
+                </Pressable>
+            </View> */}
+
+        </View>
+    );
 };
 
 export default UpdateProfile;

@@ -45,9 +45,8 @@ function RootLayoutNav() {
     const segments = useSegments();
 
     if (!authInitialized) return null;
-    const showProfileHeader = !(segments[segments.length - 1] == "home" || segments[segments.length - 1] == "(tabs)")
+    const showProfileHeader = !(segments[segments.length - 1] == "home" || segments[segments.length - 1] == "(tabs)" || segments[segments.length - 1] == "activity")
 
-    console.log(segments)
     function TabHeader() {
         if (showProfileHeader) {
             return (
@@ -61,22 +60,17 @@ function RootLayoutNav() {
     }
 
     var title = ""
-    if (segments[segments.length - 1] == "user") {
+    if (segments[segments.length - 1] == "profile") {
         title = "Profile"
     } else if (segments[segments.length - 1] == "(tabs)") {
         title = "Home"
     } else if (segments[segments.length - 1] == "activity") {
         title = "Activity"
+    } else if (segments[segments.length - 1] == "home") {
+        title = "Calendar"
     } else {
-        title = "Explore"
+        title = "Home"
     }
-
-
-
-    // const unsubscribe = NetInfo.addEventListener(state => {
-    //     console.log('Connection type', state.type);
-    //     console.log('Is connected?', state.isConnected);
-    //   });
 
     return (
         <QueryClientProvider client={queryClient} >
@@ -89,9 +83,11 @@ function RootLayoutNav() {
                                 title: "",
                                 // headerShown: false,
                                 headerRight: () => <TabHeader />,
-                                headerTitle: title,
+                                headerLeft: () => <></>,
+                                // headerTitle: title,
                                 // // headerTransparent: true,
                                 // headerBackground: 'transparent'
+                                headerTitleStyle: { color: '#222222' },
                                 headerStyle: { backgroundColor: '#F2F2F2' },
                                 headerShadowVisible: false,
                                 headerTintColor: '#222222',
@@ -106,7 +102,7 @@ function RootLayoutNav() {
                                 headerShown: false,
                             }}
                         />
-                        <Stack.Screen name="createSession" options={{ title: "Create a Session", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
+                        <Stack.Screen name="createSession" options={{ title: "Create Session", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
                         <Stack.Screen name="joinSession/[id]" options={{ title: "Join Session", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
                         <Stack.Screen name="reportScore" options={{ title: "Report Score", headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />
                         <Stack.Screen name="profile/[user]" options={{ title: "", headerShown: false, headerTintColor: '#222222', headerStyle: { backgroundColor: '#F2F2F2' }, headerShadowVisible: false }} />

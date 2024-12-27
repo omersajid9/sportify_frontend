@@ -23,21 +23,21 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
   }
 
   return (
-    <View className="flex-1 shadow-sm">
+    <View className="shadow-sm w-1/2">
       <View className="rounded-lg mx-4 overflow-hidden shadow-sm">
         <TouchableOpacity
           onPress={() => setIsExpanded(!isExpanded)}
-          className="flex flex-row justify-between items-center bg-[#e0e0e0] px-4 py-3 rounded-lg w-full shadow-sm"
+          className="flex flex-row justify-between items-center bg-[#F2F2F2] border-2 px-4 py-3 rounded-lg w-full shadow-sm"
         >
-          <Text className="text-gray-600 text-sm">{placeholder}</Text>
+          <Text className="text-[#222222] text-sm">{placeholder}</Text>
           <MaterialIcons
             name={isExpanded ? "expand-less" : "expand-more"}
             size={24}
-            color="black"
+            color="#222222"
           />
         </TouchableOpacity>
         {isExpanded && (
-          <ScrollView className="bg-white max-h-64">
+          <ScrollView className="bg-[#F2F2F2] rounded-lg my-1 max-h-64">
             {remainingPlayers?.map((player: UserDetails, index: number) => (
               <TouchableOpacity
                 key={index}
@@ -46,11 +46,10 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
               >
                 {/* Checkbox */}
                 <View
-                  className={`w-5 h-5 rounded items-center justify-center mr-3 border ${
-                    selectedPlayers.find(p => p.id === player.id)
+                  className={`w-5 h-5 rounded items-center justify-center mr-3 border ${selectedPlayers.find(p => p.id === player.id)
                       ? 'bg-blue-600 border-blue-600'
-                      : 'border-gray-300'
-                  }`}
+                      : 'border-[#222222]'
+                    }`}
                 >
                   {selectedPlayers.find(p => p.id === player.id) && (
                     <MaterialIcons name="check" size={16} color="white" />
@@ -65,19 +64,21 @@ export default function TeamPicker({ selectedPlayers, remainingPlayers, toggleMe
           </ScrollView>
         )}
       </View>
-      <View className="flex-wrap flex-row p-2">
-        {selectedPlayers?.map((member: UserDetails, index: number) => (
-          <View
-            key={index}
-            className="bg-[#e0e0e0] px-3 py-1 mx-1 my-1 rounded-full flex-row items-center shadow-sm"
-          >
-            <Text className="text-[#222222] text-sm mr-1">{member.username}</Text>
-            <TouchableOpacity onPress={() => toggleMember(member)} className="ml-1">
-              <MaterialIcons name="close" size={16} color="#222222" />
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
+      {selectedPlayers.length > 0 &&
+        <View className="flex-wrap flex-row px-2 ">
+          {selectedPlayers?.map((member: UserDetails, index: number) => (
+            <View
+              key={index}
+              className="bg-[#F2F2F2] px-3 py-1 mx-1 my-1 rounded-full flex-row items-center shadow-sm"
+            >
+              <Text className="text-[#222222] text-sm mr-1">{member.username}</Text>
+              <TouchableOpacity onPress={() => toggleMember(member)} className="ml-1">
+                <MaterialIcons name="close" size={16} color="#222222" />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      }
     </View>
   );
 }

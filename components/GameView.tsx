@@ -1,27 +1,33 @@
-import React, { useRef } from 'react';
-import { View, Text, Image } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, Image, ViewComponent, Animated, TouchableHighlight, Dimensions } from 'react-native';
 import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome6, Ionicons, Octicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { useAuth } from '../app/context/auth';
 import SportIcon from './SportIcon';
 import { router } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '../services/api';
+import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Loader from './Loader';
 
 interface GameViewProps {
   gameData: any;
   explore: boolean;
 }
 
-export default function GameView({gameData, explore}: GameViewProps) {
-  const {user} = useAuth();
-  const flRef = useRef<any>(null);
+export default function GameView({ gameData, explore }: GameViewProps) {
+  const { user } = useAuth();
+  const flRef = useRef<View>(null);
   const queryClient = useQueryClient();
+  const [swipeDetected, setSwipeDetected] = useState(false);
 
   var session = gameData.item;
-
+  
+  if (!session) {
+    return <Loader />;
+  }  
   const handleSubmit = async (rsvp: String) => {
     if (!user) {
       return;
@@ -37,7 +43,13 @@ export default function GameView({gameData, explore}: GameViewProps) {
           'Content-Type': 'application/json', // Ensure the request is in JSON format
         }
       });
-      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      if (response.status == 200) {
+          setTimeout(() => {
+            flRef.current?.setNativeProps({
+              style: { display: 'none' },
+            });
+          }, 500)
+      }
     } catch (error) {
       console.error('Error creating game:', error);
     }
@@ -54,27 +66,26 @@ export default function GameView({gameData, explore}: GameViewProps) {
   const LeftSwipeActions = () => {
     return (
       <View
-        className=' mx-auto bg-green-500 justify-center align-middle w-full rounded-xl'
+        className=' mx-auto  justify-center align-middle w-full rounded-xl'
+
       >
-        <Text
-          className=' text-white px-10 font-bold p-30'
-        >
-          Going
-        </Text>
+        {/* <Ionicons name="checkmark-sharp" size={24} color="black" /> */}
+        {/* <FontAwesome6 name="check" size={40} color="black" /> */}
+        <Octicons name="check" size={40} color="black" />
+
       </View>
     )
   }
 
-  const rightSwipeActions = () => {
+  const RightSwipeActions = () => {
     return (
+
       <View
-        className=' mx-auto bg-red-500 justify-center align-middle w-full rounded-xl'
+        className=' mx-auto items-end  justify-center align-middle w-full rounded-xl'
       >
-        <Text
-          className=' text-white px-10 font-bold p-30 self-end'
-        >
-          Not Going
-        </Text>
+        {/* <FontAwesome6 name="xmark" size={40} color="black" /> */}
+        <Octicons name="x" size={40} color="black" />
+
       </View>
     )
   }
@@ -106,19 +117,36 @@ export default function GameView({gameData, explore}: GameViewProps) {
     }
   };
 
-
   // Render content
   const renderContent = () => (
-    <View ref={flRef} className=" mx-auto bg-gray-50 w-full rounded-xl shadow-sm p-5 border border-gray-200">
+    <View 
+    
+    ref={flRef} className="flex gap-3 mx-auto bg-gray-50 w-full  min-h-60 rounded-xl shadow-sm p-5 border border-gray-200"  >
+
+      {/* <View className='flex flex-row'>
+        <SportIcon
+          sport_icon={session.sport_icon}
+          size={40}
+          sport_icon_source={session.sport_icon_source}
+          color={'rgb(34 34 34)'} />
+      </View>
+
+      <View className=" ">
+        <View className=' flex flex-row'>
+          <Text className='border-2 w-1/3'>Time</Text>
+          <Text className='border-2 w-1/3'>Duration</Text>
+          <Text className='border-2 w-1/3'></Text>
+        </View>
+    </View> */}
 
       {/* Top Row with Game Type and Player Count */}
       <View className="flex-row justify-between items-center mb-2">
         <View className="flex-row items-center">
           <SportIcon
-              sport_icon={session.sport_icon}
-              size={16}
-              sport_icon_source={session.sport_icon_source}
-              color={'rgb(34 34 34)'} />
+            sport_icon={session.sport_icon}
+            size={16}
+            sport_icon_source={session.sport_icon_source}
+            color={'rgb(34 34 34)'} />
           <Text className="ml-2 text-gray-600">{session.sport}</Text>
         </View>
         <Text className="text-gray-700 text-sm font-semibold">
@@ -126,9 +154,7 @@ export default function GameView({gameData, explore}: GameViewProps) {
         </Text>
       </View>
 
-      {/* Main Content Section */}
       <View className="flex-row items-center mb-4">
-        {/* Profile Image */}
         <Image
           source={{ uri: session.username_icon }}
           className="w-12 h-12 rounded-full border-2 border-[#222222]"
@@ -139,42 +165,39 @@ export default function GameView({gameData, explore}: GameViewProps) {
         </View>
       </View>
 
-      {/* Date, Time, Location */}
-      <View className="mb-3">
-        <Text className="text-gray-700">
-          <FontAwesome name="calendar" size={14} color="gray" /> {formatDate(new Date(session.start_time), new Date(session.end_time))}
-        </Text>
-        <Text className="text-gray-700">
-          <FontAwesome name="map-marker" size={14} color="gray" /> {session.location_name} ~ {(session.dis/ 1609.34).toPrecision(1)} miles
-        </Text>
-      </View>
+      <Text className="text-gray-700">
+        <FontAwesome name="calendar" size={14} color="gray" /> {formatDate(new Date(session.start_time), new Date(session.end_time))}
+      </Text>
+      <Text className="text-gray-700">
+        <FontAwesome name="map-marker" size={14} color="gray" /> {session.location_name} ~ {(session.dis / 1609.34).toPrecision(1)} miles
+      </Text>
 
-      {/* Skill Level Tag */}
-      {/* <View className="self-start bg-transparent px-3 py-1 rounded-full">
-            <Text className="text-blue-700 text-xs">session.skillLevel</Text>
-        </View> */}
     </View>
   );
 
   return (
-    <GestureHandlerRootView className='my-1 mx-4'>
-      {/* <Swipeable
-        leftThreshold={100}
+    <GestureHandlerRootView className='my-1'>
+      <Swipeable
+        leftThreshold={100} // Slightly increase thresholds for intentional swipes
         rightThreshold={100}
+        friction={2} // Smooth out swipe motion
+        overshootFriction={8} // Lower overshoot friction for natural rebound
         renderLeftActions={LeftSwipeActions}
-        renderRightActions={rightSwipeActions}
-        onSwipeableOpen={(direction) => {
-          direction === 'left' ? handleSwipeLeft() : handleSwipeRight()
+        renderRightActions={RightSwipeActions}
+        onSwipeableOpenStartDrag={() => setSwipeDetected(true)}
+        onSwipeableWillOpen={(direction) => {
+          setSwipeDetected(true);
+          direction === 'left' ? handleSwipeLeft() : handleSwipeRight();
         }}
-        overshootFriction={9}
         enabled={explore}
-      > */}
-        <TouchableOpacity
+      >
+        <TouchableHighlight
           activeOpacity={1}
-          onPress={() => router.push("/joinSession/" + session.id)}>
+          className=' rounded-full'
+          onPress={() => { !swipeDetected && router.push("/joinSession/" + session.id) }}>
           {renderContent()}
-        </TouchableOpacity>
-      {/* </Swipeable> */}
+        </TouchableHighlight>
+      </Swipeable>
     </GestureHandlerRootView>
   );
 }
